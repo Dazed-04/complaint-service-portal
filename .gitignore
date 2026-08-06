@@ -1,10 +1,11 @@
 target/
-*.class
 .idea/
 *.iml
+*.class
 .classpath
 .project
 .settings/
 *.log
-application-local.properties
 .env
+db.properties
+application-local.properties
