@@ -15,6 +15,14 @@ import com.miet.complaintportal.model.User;
 
 public class OracleUserDao implements UserDao {
 
+  static {
+    try {
+      Class.forName("oracle.jdbc.OracleDriver");
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("Oracle JDBC driver not found on classpath", e);
+    }
+  }
+
   private final String url;
   private final String user;
   private final String password;

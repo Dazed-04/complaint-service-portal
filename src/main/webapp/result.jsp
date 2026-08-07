@@ -3,7 +3,7 @@
 <head><title>Registered</title></head>
 <body>
     <h1>Registration received</h1>
-    <p>Name: ${name}</p>
-    <p>Email: ${email}</p>
+    <p>Name: ${sessionScope.registeredName}</p>
+    <p>Email: ${sessionScope.registeredEmail}</p>
 </body>
 </html>
