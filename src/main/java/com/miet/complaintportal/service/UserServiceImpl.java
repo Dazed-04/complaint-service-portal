@@ -12,7 +12,11 @@ public class UserServiceImpl implements UserService {
   private final UserDao userDao;
 
   public UserServiceImpl() {
-    this.userDao = new OracleUserDao();
+    this(new OracleUserDao());
+  }
+
+  public UserServiceImpl(UserDao userDao) {
+    this.userDao = userDao;
   }
 
   @Override
@@ -31,5 +35,15 @@ public class UserServiceImpl implements UserService {
     User new_user = userDao.save(user);
     return new_user;
 
+  }
+
+  @Override
+  public User login(String email, String rawPassword) throws InvalidCredentialsException, SQLException {
+    User storedUser = userDao.findByEmail(email)
+        .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+    if (!BCrypt.checkpw(rawPassword, storedUser.getPasswordHash())) {
+      throw new InvalidCredentialsException("Invalid email or password");
+    }
+    return storedUser;
   }
 }

@@ -7,4 +7,6 @@ import com.miet.complaintportal.model.User;
 public interface UserService {
   User registerUser(String name, String email, String rawPassword, String role)
       throws EmailAlreadyExistsException, SQLException;
+
+  User login(String email, String rawPassword) throws InvalidCredentialsException, SQLException;
 }
