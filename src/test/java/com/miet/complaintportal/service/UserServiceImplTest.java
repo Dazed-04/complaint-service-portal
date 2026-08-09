@@ -66,7 +66,7 @@ class UserServiceImplTest {
   @Test
   void registerUser_throwsException_whenEmailAlreadyExists() throws Exception {
     when(userDao.findByEmail(anyString())).thenAnswer(invocation -> {
-      User exists = new User(1, "test", invocation.getArgument(0), "unhashed", "CUSTOMER", LocalDateTime.now());
+      User exists = new User(1L, "test", invocation.getArgument(0), "unhashed", "CUSTOMER", LocalDateTime.now());
       return Optional.of(exists);
     });
 
@@ -75,4 +75,39 @@ class UserServiceImplTest {
     });
     verify(userDao, never()).save(any());
   }
+
+  @Test
+  void login_succeeds_withCorrectCredentials() throws Exception {
+    String passHash = BCrypt.hashpw("1234", BCrypt.gensalt());
+    when(userDao.findByEmail("test@email.com")).thenAnswer(invocation -> {
+      User exists = new User(1L, "test", invocation.getArgument(0), passHash, "CUSTOMER",
+          LocalDateTime.now());
+      return Optional.of(exists);
+    });
+    User exists = userService.login("test@email.com", "1234");
+    assertEquals("test", exists.getName());
+    assertEquals(passHash, exists.getPasswordHash());
+  }
+
+  @Test
+  void login_throwsException_withWrongPassword() throws Exception {
+    String passHash = BCrypt.hashpw("1234", BCrypt.gensalt());
+    when(userDao.findByEmail("test@email.com")).thenAnswer(invocation -> {
+      User exists = new User(1L, "test", invocation.getArgument(0), passHash, "CUSTOMER",
+          LocalDateTime.now());
+      return Optional.of(exists);
+    });
+    assertThrows(InvalidCredentialsException.class, () -> {
+      userService.login("test@email.com", "wrongPass");
+    });
+  }
+
+  @Test
+  void login_throwsException_withNoneexistentEmail() throws Exception {
+    when(userDao.findByEmail("test@email.com")).thenReturn(Optional.empty());
+    assertThrows(InvalidCredentialsException.class, () -> {
+      userService.login("test@email.com", "1234");
+    });
+  }
+
 }
