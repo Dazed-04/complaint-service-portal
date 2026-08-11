@@ -1,53 +1,26 @@
 package com.miet.complaintportal.dao;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Properties;
 
 import com.miet.complaintportal.model.User;
 
 public class OracleUserDao implements UserDao {
 
-  static {
-    try {
-      Class.forName("oracle.jdbc.OracleDriver");
-    } catch (ClassNotFoundException e) {
-      throw new RuntimeException("Oracle JDBC driver not found on classpath", e);
-    }
-  }
-
-  private final String url;
-  private final String user;
-  private final String password;
+  private final DbConnectionProvider connectionProvider;
 
   public OracleUserDao() {
-    Properties props = new Properties();
-    InputStream inputStream = OracleUserDao.class.getResourceAsStream("/db.properties");
-    try {
-      props.load(inputStream);
-    } catch (IOException io) {
-      throw new RuntimeException("Failed to load db.properties", io);
-    }
-    this.url = props.getProperty("db.url");
-    this.user = props.getProperty("db.user");
-    this.password = props.getProperty("db.password");
-  }
-
-  private Connection getConnection() throws SQLException {
-    return DriverManager.getConnection(url, user, password);
+    this.connectionProvider = new DbConnectionProvider();
   }
 
   @Override
   public User save(User user) throws SQLException {
     String query = "INSERT into users (name, email, password_hash, role) VALUES (?, ?, ?, ?)";
-    try (Connection conn = getConnection();
+    try (Connection conn = connectionProvider.getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement(query, new String[] { "id" })) {
       preparedStatement.setString(1, user.getName());
       preparedStatement.setString(2, user.getEmail());
@@ -73,7 +46,7 @@ public class OracleUserDao implements UserDao {
   @Override
   public Optional<User> findById(long id) throws SQLException {
     String query = "SELECT * from users WHERE id = ?";
-    try (Connection conn = getConnection();
+    try (Connection conn = connectionProvider.getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement(query)) {
       preparedStatement.setLong(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -94,7 +67,7 @@ public class OracleUserDao implements UserDao {
   @Override
   public Optional<User> findByEmail(String email) throws SQLException {
     String query = "SELECT * from users WHERE email = ?";
-    try (Connection conn = getConnection();
+    try (Connection conn = connectionProvider.getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement(query)) {
       preparedStatement.setString(1, email);
       try (ResultSet rs = preparedStatement.executeQuery()) {

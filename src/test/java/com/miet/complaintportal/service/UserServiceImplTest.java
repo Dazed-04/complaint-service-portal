@@ -23,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.miet.complaintportal.dao.UserDao;
+import com.miet.complaintportal.exceptions.EmailAlreadyExistsException;
+import com.miet.complaintportal.exceptions.InvalidCredentialsException;
 import com.miet.complaintportal.model.User;
 
 @ExtendWith(MockitoExtension.class)

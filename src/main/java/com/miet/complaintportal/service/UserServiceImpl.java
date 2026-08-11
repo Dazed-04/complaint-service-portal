@@ -6,6 +6,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import com.miet.complaintportal.dao.OracleUserDao;
 import com.miet.complaintportal.dao.UserDao;
+import com.miet.complaintportal.exceptions.EmailAlreadyExistsException;
+import com.miet.complaintportal.exceptions.InvalidCredentialsException;
 import com.miet.complaintportal.model.User;
 
 public class UserServiceImpl implements UserService {

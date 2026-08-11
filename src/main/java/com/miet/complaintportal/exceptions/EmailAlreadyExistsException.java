@@ -1,4 +1,4 @@
-package com.miet.complaintportal.service;
+package com.miet.complaintportal.exceptions;
 
 public class EmailAlreadyExistsException extends Exception {
   public EmailAlreadyExistsException(String message) {

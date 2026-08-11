@@ -3,8 +3,8 @@ package com.miet.complaintportal.servlet;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import com.miet.complaintportal.exceptions.InvalidCredentialsException;
 import com.miet.complaintportal.model.User;
-import com.miet.complaintportal.service.InvalidCredentialsException;
 import com.miet.complaintportal.service.UserService;
 import com.miet.complaintportal.service.UserServiceImpl;
 
