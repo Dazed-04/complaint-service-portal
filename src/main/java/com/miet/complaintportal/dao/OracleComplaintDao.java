@@ -139,7 +139,53 @@ public class OracleComplaintDao implements ComplaintDao {
   @Override
   public void updateStatus(long complaintId, ComplaintStatus newStatus, long changedByUserId, String remarks)
       throws SQLException {
-    throw new UnsupportedOperationException("Unimplemented method 'updateStatus'");
+    Connection conn = null;
+    try {
+      conn = connectionProvider.getConnection();
+      conn.setAutoCommit(false);
+
+      String oldStatus = null;
+      String selectQuery = "SELECT status FROM complaints WHERE id = ? FOR UPDATE";
+      try (PreparedStatement selectStmt = conn.prepareStatement(selectQuery)) {
+        selectStmt.setLong(1, complaintId);
+        try (ResultSet rs = selectStmt.executeQuery()) {
+          if (rs.next()) {
+            oldStatus = rs.getString("status");
+          } else {
+            throw new SQLException("No complaint found with id: " + complaintId);
+          }
+        }
+      }
+
+      String updateQuery = "UPDATE complaints SET status = ? WHERE id = ?";
+      try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+        updateStmt.setString(1, newStatus.name());
+        updateStmt.setLong(2, complaintId);
+        updateStmt.executeUpdate();
+      }
+
+      String insertQuery = "INSERT into status_history (complaint_id, old_status, new_status, changed_by, remark) VALUES (?, ?, ?, ?, ?)";
+      try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+        insertStmt.setLong(1, complaintId);
+        insertStmt.setString(2, oldStatus);
+        insertStmt.setString(3, newStatus.name());
+        insertStmt.setLong(4, changedByUserId);
+        insertStmt.setString(5, remarks);
+        insertStmt.executeUpdate();
+      }
+
+      conn.commit();
+    } catch (SQLException e) {
+      if (conn != null) {
+        conn.rollback();
+      }
+      throw e;
+    } finally {
+      if (conn != null) {
+        conn.setAutoCommit(true);
+        conn.close();
+      }
+    }
   }
 
 }

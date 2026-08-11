@@ -2,6 +2,7 @@ package com.miet.complaintportal.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
@@ -15,12 +16,14 @@ import org.junit.jupiter.api.Test;
 import com.miet.complaintportal.model.Category;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.ComplaintStatus;
+import com.miet.complaintportal.model.StatusHistory;
 import com.miet.complaintportal.model.User;
 
 class OracleComplaintDaoIT {
   private UserDao userDao;
   private CategoryDao categoryDao;
   private ComplaintDao complaintDao;
+  private StatusHistoryDao statusHistoryDao;
   private long userId;
   private long categoryId;
   private String title;
@@ -63,6 +66,7 @@ class OracleComplaintDaoIT {
     userDao = new OracleUserDao();
     categoryDao = new OracleCategoryDao();
     complaintDao = new OracleComplaintDao();
+    statusHistoryDao = new OracleStatusHistoryDao();
     userId = createUser();
     categoryId = createCategory();
   }
@@ -86,6 +90,33 @@ class OracleComplaintDaoIT {
     assertNotEquals(0, saved.getId());
     List<Complaint> found = complaintDao.findByCustomerId(userId);
     assertTrue(found.stream().anyMatch(c -> c.getId() == saved.getId()));
+  }
+
+  @Test
+  void findByComplaintId_updateComplaintStatus_saveToStatusHistory() throws Exception {
+    Complaint saved = complaintDao.save(createComplaint());
+    ComplaintStatus oldStatus = saved.getStatus();
+    long id = saved.getId();
+    complaintDao.updateStatus(id, ComplaintStatus.IN_PROGRESS, userId, "Test remark.");
+    Optional<Complaint> updated = complaintDao.findById(id);
+    assertNotEquals(updated, Optional.empty());
+    assertEquals(ComplaintStatus.IN_PROGRESS, updated.get().getStatus());
+    List<StatusHistory> found = statusHistoryDao.findByComplaintId(id);
+    assertTrue(found.stream().anyMatch(c -> c.getChangedBy() == userId));
+    assertTrue(found.stream().anyMatch(c -> c.getOldStatus() == oldStatus));
+  }
+
+  @Test
+  void updatedStatus_rollsBackStatusChange_whenHistoryInsertFails() throws Exception {
+    Complaint saved = complaintDao.save(createComplaint());
+    long id = saved.getId();
+    ComplaintStatus oldStatus = saved.getStatus();
+    long wrongUserId = 999999L;
+    assertThrows(SQLException.class, () -> {
+      complaintDao.updateStatus(id, ComplaintStatus.IN_PROGRESS, wrongUserId, "Should fail");
+    });
+    Optional<Complaint> afterFail = complaintDao.findById(id);
+    assertEquals(oldStatus, afterFail.get().getStatus());
   }
 
 }
