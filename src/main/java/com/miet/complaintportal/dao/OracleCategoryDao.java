@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.miet.complaintportal.model.Category;
@@ -75,4 +78,21 @@ public class OracleCategoryDao implements CategoryDao {
     return Optional.empty();
   }
 
+  @Override
+  public List<Category> findAll() throws SQLException {
+    String query = "SELECT * from categories";
+    List<Category> result = new ArrayList<>();
+    try (Connection conn = connectionProvider.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query)) {
+      while (rs.next()) {
+        long id = rs.getLong("id");
+        String name = rs.getString("name");
+        String description = rs.getString("description");
+        Category category = new Category(id, name, description);
+        result.add(category);
+      }
+      return result;
+    }
+  }
 }

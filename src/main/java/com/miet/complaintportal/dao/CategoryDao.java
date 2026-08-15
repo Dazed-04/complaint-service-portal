@@ -1,6 +1,7 @@
 package com.miet.complaintportal.dao;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import com.miet.complaintportal.model.Category;
@@ -11,5 +12,7 @@ public interface CategoryDao {
   Optional<Category> findById(long id) throws SQLException;
 
   Optional<Category> findByName(String name) throws SQLException;
+
+  List<Category> findAll() throws SQLException;
 
 }
