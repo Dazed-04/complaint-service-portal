@@ -66,6 +66,24 @@ class ComplaintServiceImplTest {
   }
 
   @Test
+  void viewComplaints_returnsComplaints_whenCustomerHasComplaints() throws Exception {
+    Complaint c1 = new Complaint();
+    c1.setId(1L);
+    c1.setCustomerId(42L);
+    c1.setTitle("First complaint");
+    Complaint c2 = new Complaint();
+    c2.setId(2L);
+    c2.setCustomerId(42L);
+    c2.setTitle("Second complaint");
+
+    when(complaintDao.findByCustomerId(42L)).thenReturn(List.of(c1, c2));
+    List<Complaint> result = complaintService.viewComplaints(42L);
+    assertEquals(2, result.size());
+    assertTrue(result.contains(c1));
+    assertTrue(result.contains(c2));
+  }
+
+  @Test
   void updateComplaintStatus_callsUpdateStatus_thenReturnsUpdatedComplaint() throws Exception {
     Complaint updatedComplaint = new Complaint();
     updatedComplaint.setId(1L);
