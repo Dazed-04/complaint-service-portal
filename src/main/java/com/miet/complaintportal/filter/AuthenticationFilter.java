@@ -27,6 +27,8 @@ public class AuthenticationFilter implements Filter {
     if (loggedIn) {
       chain.doFilter(request, response);
     } else {
+      HttpSession newSession = httpRequest.getSession(true);
+      newSession.setAttribute("redirectAfterLogin", httpRequest.getRequestURI());
       httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
     }
   }

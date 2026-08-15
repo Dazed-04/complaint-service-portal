@@ -35,15 +35,20 @@ public class LoginServlet extends HttpServlet {
     try {
       User user = userService.login(email, password);
       HttpSession existingSession = request.getSession(false);
+      String redirectPath = null;
       if (existingSession != null) {
+        redirectPath = (String) existingSession.getAttribute("redirectAfterLogin");
         existingSession.invalidate();
       }
       HttpSession session = request.getSession(true);
       session.setAttribute("userId", user.getId());
       session.setAttribute("userName", user.getName());
       session.setAttribute("userRole", user.getRole());
-      response.sendRedirect(request.getContextPath() + "/welcome.jsp");
-
+      if (redirectPath != null) {
+        response.sendRedirect(redirectPath);
+      } else {
+        response.sendRedirect(request.getContextPath() + "/welcome.jsp");
+      }
     } catch (InvalidCredentialsException e) {
       request.setAttribute("errorMessage", e.getMessage());
       RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
