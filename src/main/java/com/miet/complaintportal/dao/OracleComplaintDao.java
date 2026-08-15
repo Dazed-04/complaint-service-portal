@@ -29,7 +29,7 @@ public class OracleComplaintDao implements ComplaintDao {
       prepareStatement.setLong(2, complaint.getCategoryId());
       prepareStatement.setString(3, complaint.getTitle());
       prepareStatement.setString(4, complaint.getDescription());
-      prepareStatement.setString(5, ComplaintStatus.OPEN.name());
+      prepareStatement.setString(5, complaint.getStatus().name());
 
       int rowsInserted = prepareStatement.executeUpdate();
       if (rowsInserted > 0) {
@@ -43,7 +43,7 @@ public class OracleComplaintDao implements ComplaintDao {
               newComplaint.setCategoryId(complaint.getCategoryId());
               newComplaint.setTitle(complaint.getTitle());
               newComplaint.setDescription(complaint.getDescription());
-              newComplaint.setStatus(ComplaintStatus.OPEN);
+              newComplaint.setStatus(complaint.getStatus());
               return newComplaint;
             }
           }

@@ -13,7 +13,7 @@ import com.miet.complaintportal.model.StatusHistory;
 
 public class OracleStatusHistoryDao implements StatusHistoryDao {
 
-  private DbConnectionProvider connectionProvider;
+  private final DbConnectionProvider connectionProvider;
 
   public OracleStatusHistoryDao() {
     this.connectionProvider = new DbConnectionProvider();

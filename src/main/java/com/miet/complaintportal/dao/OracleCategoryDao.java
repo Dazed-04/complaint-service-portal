@@ -10,7 +10,7 @@ import com.miet.complaintportal.model.Category;
 
 public class OracleCategoryDao implements CategoryDao {
 
-  private DbConnectionProvider connectionProvider;
+  private final DbConnectionProvider connectionProvider;
 
   public OracleCategoryDao() {
     this.connectionProvider = new DbConnectionProvider();

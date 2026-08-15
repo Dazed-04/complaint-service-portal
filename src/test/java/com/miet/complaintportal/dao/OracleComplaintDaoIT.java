@@ -53,11 +53,13 @@ class OracleComplaintDaoIT {
   Complaint createComplaint() throws SQLException {
     title = "test_" + UUID.randomUUID();
     description = "Test complaint.";
+    ComplaintStatus status = ComplaintStatus.OPEN;
     Complaint complaint = new Complaint();
     complaint.setCustomerId(userId);
     complaint.setCategoryId(categoryId);
     complaint.setTitle(title);
     complaint.setDescription(description);
+    complaint.setStatus(status);
     return complaint;
   }
 
