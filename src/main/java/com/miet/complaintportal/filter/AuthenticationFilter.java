@@ -24,12 +24,26 @@ public class AuthenticationFilter implements Filter {
     HttpSession session = httpRequest.getSession(false);
     boolean loggedIn = (session != null && session.getAttribute("userId") != null);
 
-    if (loggedIn) {
-      chain.doFilter(request, response);
-    } else {
+    if (!loggedIn) {
       HttpSession newSession = httpRequest.getSession(true);
       newSession.setAttribute("redirectAfterLogin", httpRequest.getRequestURI());
       httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
+      return;
     }
+
+    String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+    String userRole = (String) session.getAttribute("userRole");
+
+    // TODO: role-gate specific sub-paths. For example, once agent/admin
+    // servlets exist under /complaints/manage/*, you'd check something like:
+    //
+    // if (path.startsWith("/complaints/manage") && !("AGENT".equals(userRole) ||
+    // "ADMIN".equals(userRole))) {
+    // httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Insufficient
+    // permissions");
+    // return;
+    // }
+
+    chain.doFilter(request, response);
   }
 }
