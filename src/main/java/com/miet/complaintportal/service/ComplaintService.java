@@ -2,6 +2,7 @@ package com.miet.complaintportal.service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.ComplaintStatus;
@@ -14,5 +15,7 @@ public interface ComplaintService {
 
   Complaint updateComplaintStatus(long complaintId, ComplaintStatus newStatus, long changedByUserId, String remarks)
       throws SQLException;
+
+  Optional<ComplaintDetail> viewComplaintDetail(long complaintId) throws SQLException;
 
 }
