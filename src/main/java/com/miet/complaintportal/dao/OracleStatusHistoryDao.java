@@ -22,7 +22,7 @@ public class OracleStatusHistoryDao implements StatusHistoryDao {
   @Override
   public List<StatusHistory> findByComplaintId(long complaintId) throws SQLException {
     List<StatusHistory> results = new ArrayList<>();
-    String query = "SELECT * FROM status_history WHERE complaint_id = ?";
+    String query = "SELECT * FROM status_history WHERE complaint_id = ? ORDER BY changed_at DESC";
     try (Connection conn = connectionProvider.getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement(query)) {
       preparedStatement.setLong(1, complaintId);

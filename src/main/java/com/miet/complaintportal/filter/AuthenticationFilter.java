@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebFilter("/complaints/*")
+@WebFilter(urlPatterns = { "/complaints/*", "/agent/*" })
 public class AuthenticationFilter implements Filter {
 
   @Override
@@ -34,15 +34,10 @@ public class AuthenticationFilter implements Filter {
     String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
     String userRole = (String) session.getAttribute("userRole");
 
-    // TODO: role-gate specific sub-paths. For example, once agent/admin
-    // servlets exist under /complaints/manage/*, you'd check something like:
-    //
-    // if (path.startsWith("/complaints/manage") && !("AGENT".equals(userRole) ||
-    // "ADMIN".equals(userRole))) {
-    // httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Insufficient
-    // permissions");
-    // return;
-    // }
+    if (path.startsWith("/agent") && !("AGENT".equals(userRole) || "ADMIN".equals(userRole))) {
+      httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Agent access required");
+      return;
+    }
 
     chain.doFilter(request, response);
   }

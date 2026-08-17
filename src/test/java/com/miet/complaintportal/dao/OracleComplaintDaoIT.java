@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -119,6 +121,20 @@ class OracleComplaintDaoIT {
     });
     Optional<Complaint> afterFail = complaintDao.findById(id);
     assertEquals(oldStatus, afterFail.get().getStatus());
+  }
+
+  @Test
+  void findByComplaintId_returnsHistoryNewestFirst() throws Exception {
+    Complaint saved = complaintDao.save(createComplaint());
+    complaintDao.updateStatus(saved.getId(), ComplaintStatus.IN_PROGRESS, userId,
+        "Status should be in descending order");
+    Thread.sleep(1000);
+    complaintDao.updateStatus(saved.getId(), ComplaintStatus.RESOLVED, userId,
+        "Status should be in descending order");
+    List<StatusHistory> history = statusHistoryDao.findByComplaintId(saved.getId());
+    List<LocalDateTime> timestamps = history.stream().map(StatusHistory::getChangedAt).toList();
+    List<LocalDateTime> sortedDesc = timestamps.stream().sorted(Comparator.reverseOrder()).toList();
+    assertEquals(sortedDesc, timestamps);
   }
 
 }

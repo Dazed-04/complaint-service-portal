@@ -18,4 +18,6 @@ public interface ComplaintService {
 
   Optional<ComplaintDetail> viewComplaintDetail(long complaintId) throws SQLException;
 
+  List<Complaint> viewAssignedComplaints(long agentId) throws SQLException;
+
 }

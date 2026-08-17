@@ -1,6 +1,7 @@
 package com.miet.complaintportal.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class StatusHistory {
 
@@ -8,6 +9,8 @@ public class StatusHistory {
   private ComplaintStatus oldStatus, newStatus;
   private String remark;
   private LocalDateTime changedAt;
+  private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm");
+  private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
 
   public StatusHistory(long id, long complaintId, long changedBy, ComplaintStatus oldStatus, ComplaintStatus newStatus,
       String remark, LocalDateTime changedAt) {
@@ -79,4 +82,11 @@ public class StatusHistory {
     this.changedAt = changedAt;
   }
 
+  public String getFormattedChangedAt() {
+    return changedAt != null ? changedAt.format(dateTimeFormatter) : null;
+  }
+
+  public String getFormattedChangedAtDate() {
+    return changedAt != null ? changedAt.format(dateFormatter) : null;
+  }
 }

@@ -76,4 +76,9 @@ public class ComplaintServiceImpl implements ComplaintService {
     ComplaintDetail complaintDetail = new ComplaintDetail(complaint.get(), categoryName, history);
     return Optional.of(complaintDetail);
   }
+
+  @Override
+  public List<Complaint> viewAssignedComplaints(long agentId) throws SQLException {
+    return complaintDao.findByAgentId(agentId);
+  }
 }

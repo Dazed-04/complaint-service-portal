@@ -3,7 +3,7 @@
   <html>
 
   <head>
-    <title>Complaint Detail</title>
+    <title>Update Complaint Status</title>
   </head>
 
   <body>
@@ -20,6 +20,17 @@
     <p><strong>Description:</strong>
       <c:out value="${detail.complaint.description}" />
     </p>
+    <form action="${pageContext.request.contextPath}/agent/update?id=${detail.complaint.id}" method="post">
+      <label>New Status:
+        <select name="newStatus" required>
+          <c:forEach var="s" items="${statuses}">
+            <option value="${s}">${s}</option>
+          </c:forEach>
+        </select>
+      </label><br>
+      <label>Remark: <textarea name="remark" required></textarea></label><br>
+      <button type="submit">Update</button>
+    </form>
 
     <h2>Status History</h2>
     <c:if test="${empty detail.history}">
@@ -32,13 +43,15 @@
             <th>Changed At</th>
             <th>Old Status</th>
             <th>New Status</th>
+            <th>Changed By (user id)</th>
+            <th>Remark</th>
           </tr>
         </thead>
         <tbody>
           <c:forEach var="h" items="${detail.history}">
             <tr>
               <td>
-                <c:out value="${h.formattedChangedAtDate}" />
+                <c:out value="${h.formattedChangedAt}" />
               </td>
               <td>
                 <c:out value="${h.oldStatus}" />
@@ -46,12 +59,18 @@
               <td>
                 <c:out value="${h.newStatus}" />
               </td>
+              <td>
+                <c:out value="${h.changedBy}" />
+              </td>
+              <td>
+                <c:out value="${h.remark}" />
+              </td>
             </tr>
           </c:forEach>
         </tbody>
       </table>
     </c:if>
-    <p><a href="${pageContext.request.contextPath}/complaints/view">Back to my complaints</a></p>
+    <p><a href="${pageContext.request.contextPath}/agent/assigned">Back to assigned complaints</a></p>
   </body>
 
   </html>
