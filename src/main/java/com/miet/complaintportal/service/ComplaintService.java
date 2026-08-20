@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import com.miet.complaintportal.exceptions.InvalidAgentException;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.ComplaintStatus;
 
@@ -19,5 +20,7 @@ public interface ComplaintService {
   Optional<ComplaintDetail> viewComplaintDetail(long complaintId) throws SQLException;
 
   List<Complaint> viewAssignedComplaints(long agentId) throws SQLException;
+
+  void assignAgent(long complaintId, long agentId) throws SQLException, InvalidAgentException;
 
 }

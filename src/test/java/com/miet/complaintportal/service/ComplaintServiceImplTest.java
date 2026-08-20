@@ -25,14 +25,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.miet.complaintportal.dao.CategoryDao;
 import com.miet.complaintportal.dao.ComplaintDao;
 import com.miet.complaintportal.dao.StatusHistoryDao;
+import com.miet.complaintportal.dao.UserDao;
+import com.miet.complaintportal.exceptions.InvalidAgentException;
 import com.miet.complaintportal.model.Category;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.ComplaintStatus;
 import com.miet.complaintportal.model.StatusHistory;
+import com.miet.complaintportal.model.User;
 
 @ExtendWith(MockitoExtension.class)
 class ComplaintServiceImplTest {
 
+  @Mock
+  private UserDao userDao;
   @Mock
   private ComplaintDao complaintDao;
   @Mock
@@ -43,7 +48,7 @@ class ComplaintServiceImplTest {
 
   @BeforeEach
   void setup() {
-    complaintService = new ComplaintServiceImpl(complaintDao, categoryDao, statusHistoryDao);
+    complaintService = new ComplaintServiceImpl(userDao, complaintDao, categoryDao, statusHistoryDao);
   }
 
   @Test
@@ -148,6 +153,41 @@ class ComplaintServiceImplTest {
 
     assertThrows(IllegalStateException.class, () -> {
       complaintService.viewComplaintDetail(1L);
+    });
+  }
+
+  @Test
+  void assignAgent_updatesAssignedAgent_whenAgentExists() throws Exception {
+    User agent = new User();
+    agent.setId(5L);
+    agent.setName("test agent");
+    agent.setEmail("example@email.com");
+    agent.setRole("AGENT");
+    when(userDao.findById(5L)).thenReturn(Optional.of(agent));
+
+    complaintService.assignAgent(1L, 5L);
+    verify(complaintDao).assignAgent(1L, 5L);
+  }
+
+  @Test
+  void assignAgent_throwsException_whenNonexistentAgentId() throws Exception {
+    when(userDao.findById(anyLong())).thenReturn(Optional.empty());
+    assertThrows(InvalidAgentException.class, () -> {
+      complaintService.assignAgent(1L, 5L);
+    });
+  }
+
+  @Test
+  void assignAgent_throwsException_whenUserExistsButWrongRole() throws Exception {
+    User user = new User();
+    user.setId(5L);
+    user.setRole("CUSTOMER");
+    user.setName("test user");
+    user.setEmail("test email");
+    when(userDao.findById(5L)).thenReturn(Optional.of(user));
+
+    assertThrows(InvalidAgentException.class, () -> {
+      complaintService.assignAgent(1L, 5L);
     });
   }
 

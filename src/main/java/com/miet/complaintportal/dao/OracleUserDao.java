@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.miet.complaintportal.model.User;
@@ -83,5 +86,26 @@ public class OracleUserDao implements UserDao {
       }
     }
     return Optional.empty();
+  }
+
+  @Override
+  public List<User> findAllAgents() throws SQLException {
+    String query = "SELECT * from users WHERE role = 'AGENT'";
+    List<User> users = new ArrayList<>();
+    try (Connection conn = connectionProvider.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query)) {
+      while (rs.next()) {
+        long id = rs.getLong("id");
+        String name = rs.getString("name");
+        String email = rs.getString("email");
+        String pass_hash = rs.getString("password_hash");
+        String role = rs.getString("role");
+        LocalDateTime created_at = rs.getObject("created_at", LocalDateTime.class);
+        User user = new User(id, name, email, pass_hash, role, created_at);
+        users.add(user);
+      }
+      return users;
+    }
   }
 }

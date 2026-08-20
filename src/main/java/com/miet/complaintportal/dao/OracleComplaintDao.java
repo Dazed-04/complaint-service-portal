@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -188,4 +189,42 @@ public class OracleComplaintDao implements ComplaintDao {
     }
   }
 
+  @Override
+  public List<Complaint> findAll() throws SQLException {
+    String query = "SELECT * from complaints";
+    List<Complaint> complaints = new ArrayList<>();
+    try (Connection conn = connectionProvider.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query)) {
+      while (rs.next()) {
+        long id = rs.getLong("id");
+        long customerId = rs.getLong("customer_id");
+        Long agentId = rs.getLong("agent_id");
+        if (rs.wasNull()) {
+          agentId = null;
+        }
+        long categoryId = rs.getLong("category_id");
+        String title = rs.getString("title");
+        String description = rs.getString("description");
+        ComplaintStatus status = ComplaintStatus.valueOf(rs.getString("status"));
+        LocalDateTime createdAt = rs.getObject("created_at", LocalDateTime.class);
+        LocalDateTime updatedAt = rs.getObject("updated_at", LocalDateTime.class);
+        Complaint complaint = new Complaint(id, customerId, agentId, categoryId, title, description, status,
+            createdAt, updatedAt);
+        complaints.add(complaint);
+      }
+      return complaints;
+    }
+  }
+
+  @Override
+  public void assignAgent(long complaintId, long agentId) throws SQLException {
+    String updateQuery = "UPDATE complaints set agent_id = ? where id = ?";
+    try (Connection conn = connectionProvider.getConnection();
+        PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+      updateStmt.setLong(1, agentId);
+      updateStmt.setLong(2, complaintId);
+      updateStmt.executeUpdate();
+    }
+  }
 }

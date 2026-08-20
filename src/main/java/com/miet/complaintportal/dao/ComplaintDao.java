@@ -17,6 +17,10 @@ public interface ComplaintDao {
 
   List<Complaint> findByAgentId(long agentId) throws SQLException;
 
+  List<Complaint> findAll() throws SQLException;
+
+  void assignAgent(long complaintId, long agentId) throws SQLException;
+
   void updateStatus(long complaintId, ComplaintStatus newStatus, long changedByUserId, String remarks)
       throws SQLException;
 }
