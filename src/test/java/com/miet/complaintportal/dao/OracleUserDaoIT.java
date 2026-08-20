@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,5 +51,17 @@ class OracleUserDaoIT {
   void findByEmail_returnsEmpty_whenNoSuchUser() throws Exception {
     String email = UUID.randomUUID() + "random";
     assertEquals(Optional.empty(), userDao.findByEmail(email));
+  }
+
+  @Test
+  void findAllAgents_returnsOnlyAgents() throws Exception {
+    User user = createUser();
+    User agent = createUser();
+    agent.setRole("AGENT");
+    User savedUser = userDao.save(user);
+    User savedAgent = userDao.save(agent);
+    List<User> agents = userDao.findAllAgents();
+    assertTrue(agents.stream().anyMatch(a -> a.getId() == savedAgent.getId()));
+    assertTrue(agents.stream().noneMatch(a -> a.getId() == savedUser.getId()));
   }
 }

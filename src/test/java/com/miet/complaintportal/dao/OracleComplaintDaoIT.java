@@ -40,7 +40,17 @@ class OracleComplaintDaoIT {
     user.setPasswordHash("testPasswd");
     User saved = userDao.save(user);
     return saved.getId();
+  }
 
+  long createAgent() throws SQLException {
+    String email = "test_" + UUID.randomUUID() + "@example.com";
+    User agent = new User();
+    agent.setName("test");
+    agent.setEmail(email);
+    agent.setRole("CUSTOMER");
+    agent.setPasswordHash("testPasswd");
+    User saved = userDao.save(agent);
+    return saved.getId();
   }
 
   long createCategory() throws SQLException {
@@ -135,6 +145,24 @@ class OracleComplaintDaoIT {
     List<LocalDateTime> timestamps = history.stream().map(StatusHistory::getChangedAt).toList();
     List<LocalDateTime> sortedDesc = timestamps.stream().sorted(Comparator.reverseOrder()).toList();
     assertEquals(sortedDesc, timestamps);
+  }
+
+  @Test
+  void findAll_returnsAllComplaints() throws Exception {
+    Complaint saved = complaintDao.save(createComplaint());
+    Complaint saved2 = complaintDao.save(createComplaint());
+    List<Complaint> complaints = complaintDao.findAll();
+    assertTrue(complaints.stream().anyMatch(c -> c.getId() == saved.getId()));
+    assertTrue(complaints.stream().anyMatch(c -> c.getId() == saved2.getId()));
+  }
+
+  @Test
+  void assignAgent_setsAgentId() throws Exception {
+    Complaint saved = complaintDao.save(createComplaint());
+    long agentId = createAgent();
+    complaintDao.assignAgent(saved.getId(), agentId);
+    Optional<Complaint> found = complaintDao.findById(saved.getId());
+    assertEquals(agentId, found.get().getAgentId());
   }
 
 }
