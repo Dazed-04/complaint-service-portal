@@ -23,4 +23,6 @@ public interface ComplaintService {
 
   void assignAgent(long complaintId, long agentId) throws SQLException, InvalidAgentException;
 
+  List<Complaint> listAllComplaints() throws SQLException;
+
 }

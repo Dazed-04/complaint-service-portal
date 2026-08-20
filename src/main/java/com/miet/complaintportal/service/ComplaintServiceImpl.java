@@ -101,4 +101,9 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
     complaintDao.assignAgent(complaintId, agentId);
   }
+
+  @Override
+  public List<Complaint> listAllComplaints() throws SQLException {
+    return complaintDao.findAll();
+  }
 }
