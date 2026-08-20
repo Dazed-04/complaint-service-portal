@@ -165,4 +165,11 @@ class OracleComplaintDaoIT {
     assertEquals(agentId, found.get().getAgentId());
   }
 
+  @Test
+  void findByComplaintId_returnsEmptyList_whenNoStatusChangesRecorded() throws Exception {
+    Complaint saved = complaintDao.save(createComplaint());
+    List<StatusHistory> history = statusHistoryDao.findByComplaintId(saved.getId());
+    assertTrue(history.isEmpty());
+  }
+
 }
