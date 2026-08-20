@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.miet.complaintportal.dao.CategoryDao;
 import com.miet.complaintportal.exceptions.CategoryAlreadyExistsException;
+import com.miet.complaintportal.exceptions.CategoryNameRequiredException;
 import com.miet.complaintportal.model.Category;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,6 +45,15 @@ public class CategoryServiceImplTest {
     Category saved = categoryService.createCategory(name, description);
     assertEquals(name, saved.getName());
     assertEquals(description, saved.getDescription());
+  }
+
+  @Test
+  void createCategory_throwsException_whenNameBlank() throws Exception {
+    String name = "";
+    String description = "testing blank category name";
+    assertThrows(CategoryNameRequiredException.class, () -> {
+      categoryService.createCategory(name, description);
+    });
   }
 
   @Test

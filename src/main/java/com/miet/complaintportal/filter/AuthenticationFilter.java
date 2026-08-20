@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebFilter(urlPatterns = { "/complaints/*", "/agent/*" })
+@WebFilter(urlPatterns = { "/complaints/*", "/agent/*", "/admin/*" })
 public class AuthenticationFilter implements Filter {
 
   @Override
@@ -36,6 +36,11 @@ public class AuthenticationFilter implements Filter {
 
     if (path.startsWith("/agent") && !("AGENT".equals(userRole) || "ADMIN".equals(userRole))) {
       httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Agent access required");
+      return;
+    }
+
+    if (path.startsWith("/admin") && !"ADMIN".equals(userRole)) {
+      httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Admin access required");
       return;
     }
 

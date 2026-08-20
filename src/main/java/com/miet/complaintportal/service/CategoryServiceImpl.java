@@ -6,6 +6,7 @@ import java.util.List;
 import com.miet.complaintportal.dao.CategoryDao;
 import com.miet.complaintportal.dao.OracleCategoryDao;
 import com.miet.complaintportal.exceptions.CategoryAlreadyExistsException;
+import com.miet.complaintportal.exceptions.CategoryNameRequiredException;
 import com.miet.complaintportal.model.Category;
 
 public class CategoryServiceImpl implements CategoryService {
@@ -21,8 +22,12 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   @Override
-  public Category createCategory(String name, String description) throws SQLException, CategoryAlreadyExistsException {
+  public Category createCategory(String name, String description)
+      throws SQLException, CategoryAlreadyExistsException, CategoryNameRequiredException {
 
+    if (name == null || name.isBlank()) {
+      throw new CategoryNameRequiredException("Category name is required.");
+    }
     if (categoryDao.findByName(name).isPresent()) {
       throw new CategoryAlreadyExistsException("Category already exists: " + name);
     }
