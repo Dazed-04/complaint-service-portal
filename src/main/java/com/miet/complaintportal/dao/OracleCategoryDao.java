@@ -62,15 +62,16 @@ public class OracleCategoryDao implements CategoryDao {
 
   @Override
   public Optional<Category> findByName(String name) throws SQLException {
-    String query = "SELECT * from categories WHERE name = ?";
+    String query = "SELECT * from categories WHERE UPPER(name) = UPPER(?)";
     try (Connection conn = connectionProvider.getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement(query)) {
       preparedStatement.setString(1, name);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           long id = rs.getLong("id");
+          String storedName = rs.getString("name");
           String description = rs.getString("description");
-          Category category = new Category(id, name, description);
+          Category category = new Category(id, storedName, description);
           return Optional.of(category);
         }
       }
