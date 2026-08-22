@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.miet.complaintportal.dao.UserDao;
 import com.miet.complaintportal.exceptions.EmailAlreadyExistsException;
 import com.miet.complaintportal.exceptions.InvalidCredentialsException;
+import com.miet.complaintportal.exceptions.LastAdminException;
 import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 
@@ -110,6 +112,26 @@ class UserServiceImplTest {
     when(userDao.findByEmail("test@email.com")).thenReturn(Optional.empty());
     assertThrows(InvalidCredentialsException.class, () -> {
       userService.login("test@email.com", "1234");
+    });
+  }
+
+  @Test
+  void updateRole_succeeds_whenDemotingWithMultipleAdmins() throws Exception {
+    User admin1 = new User(1L, "test1", "test1@email.com", "password", Role.ADMIN, LocalDateTime.now());
+    User admin2 = new User(2L, "test2", "test2@email.com", "password", Role.ADMIN, LocalDateTime.now());
+    when(userDao.findById(1L)).thenReturn(Optional.of(admin1));
+    when(userDao.findAllAdmins()).thenReturn(List.of(admin1, admin2));
+    userService.updateRole(1L, Role.CUSTOMER);
+    verify(userDao).updateRole(1L, Role.CUSTOMER);
+  }
+
+  @Test
+  void updateRole_throwsException_whenDemoting_withOnlySingleAdmin() throws Exception {
+    User admin = new User(1L, "test", "test@email.com", "password", Role.ADMIN, LocalDateTime.now());
+    when(userDao.findById(1L)).thenReturn(Optional.of(admin));
+    when(userDao.findAllAdmins()).thenReturn(List.of(admin));
+    assertThrows(LastAdminException.class, () -> {
+      userService.updateRole(1L, Role.CUSTOMER);
     });
   }
 

@@ -55,6 +55,18 @@ class OracleUserDaoIT {
   }
 
   @Test
+  void findAllAdmins_returnsOnlyAdmins() throws Exception {
+    User user = createUser();
+    User admin = createUser();
+    admin.setRole(Role.ADMIN);
+    User savedUser = userDao.save(user);
+    User savedAgent = userDao.save(admin);
+    List<User> admins = userDao.findAllAdmins();
+    assertTrue(admins.stream().anyMatch(a -> a.getId() == savedAgent.getId()));
+    assertTrue(admins.stream().noneMatch(a -> a.getId() == savedUser.getId()));
+  }
+
+  @Test
   void findAllAgents_returnsOnlyAgents() throws Exception {
     User user = createUser();
     User agent = createUser();
@@ -67,7 +79,7 @@ class OracleUserDaoIT {
   }
 
   @Test
-  void findAll_returnsOnlyCustomers() throws Exception {
+  void findAllCustomers_returnsOnlyCustomers() throws Exception {
     User customer = createUser();
     User agent = createUser();
     agent.setRole(Role.AGENT);

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import com.miet.complaintportal.exceptions.EmailAlreadyExistsException;
 import com.miet.complaintportal.exceptions.InvalidCredentialsException;
+import com.miet.complaintportal.exceptions.LastAdminException;
 import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 
@@ -12,4 +13,6 @@ public interface UserService {
       throws EmailAlreadyExistsException, SQLException;
 
   User login(String email, String rawPassword) throws InvalidCredentialsException, SQLException;
+
+  void updateRole(long userId, Role newRole) throws SQLException, LastAdminException;
 }

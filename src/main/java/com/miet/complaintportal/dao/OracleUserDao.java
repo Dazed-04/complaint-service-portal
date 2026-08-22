@@ -90,6 +90,27 @@ public class OracleUserDao implements UserDao {
   }
 
   @Override
+  public List<User> findAllAdmins() throws SQLException {
+    String query = "SELECT * from users WHERE role = 'ADMIN'";
+    List<User> admins = new ArrayList<>();
+    try (Connection conn = connectionProvider.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query)) {
+      while (rs.next()) {
+        long id = rs.getLong("id");
+        String name = rs.getString("name");
+        String email = rs.getString("email");
+        String pass_hash = rs.getString("password_hash");
+        Role role = Role.valueOf(rs.getString("role"));
+        LocalDateTime created_at = rs.getObject("created_at", LocalDateTime.class);
+        User admin = new User(id, name, email, pass_hash, role, created_at);
+        admins.add(admin);
+      }
+      return admins;
+    }
+  }
+
+  @Override
   public List<User> findAllAgents() throws SQLException {
     String query = "SELECT * from users WHERE role = 'AGENT'";
     List<User> agents = new ArrayList<>();
@@ -141,4 +162,5 @@ public class OracleUserDao implements UserDao {
       updateStmt.executeUpdate();
     }
   }
+
 }

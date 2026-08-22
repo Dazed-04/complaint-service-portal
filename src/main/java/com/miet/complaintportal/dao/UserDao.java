@@ -18,5 +18,7 @@ public interface UserDao {
 
   List<User> findAllCustomers() throws SQLException;
 
+  List<User> findAllAdmins() throws SQLException;
+
   void updateRole(long userId, Role newRole) throws SQLException;
 }
