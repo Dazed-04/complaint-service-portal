@@ -4,13 +4,14 @@ import java.time.LocalDateTime;
 
 public class User {
   private long id;
-  private String name, email, passwordHash, role;
+  private String name, email, passwordHash;
+  private Role role;
   private LocalDateTime createdAt;
 
   public User() {
   }
 
-  public User(long id, String name, String email, String passwordHash, String role, LocalDateTime createdAt) {
+  public User(long id, String name, String email, String passwordHash, Role role, LocalDateTime createdAt) {
     this.id = id;
     this.name = name;
     this.email = email;
@@ -51,11 +52,11 @@ public class User {
     this.passwordHash = pass;
   }
 
-  public String getRole() {
+  public Role getRole() {
     return role;
   }
 
-  public void setRole(String role) {
+  public void setRole(Role role) {
     this.role = role;
   }
 

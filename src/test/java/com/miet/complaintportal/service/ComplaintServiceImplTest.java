@@ -30,6 +30,7 @@ import com.miet.complaintportal.exceptions.InvalidAgentException;
 import com.miet.complaintportal.model.Category;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.ComplaintStatus;
+import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.StatusHistory;
 import com.miet.complaintportal.model.User;
 
@@ -162,7 +163,7 @@ class ComplaintServiceImplTest {
     agent.setId(5L);
     agent.setName("test agent");
     agent.setEmail("example@email.com");
-    agent.setRole("AGENT");
+    agent.setRole(Role.AGENT);
     when(userDao.findById(5L)).thenReturn(Optional.of(agent));
 
     complaintService.assignAgent(1L, 5L);
@@ -181,7 +182,7 @@ class ComplaintServiceImplTest {
   void assignAgent_throwsException_whenUserExistsButWrongRole() throws Exception {
     User user = new User();
     user.setId(5L);
-    user.setRole("CUSTOMER");
+    user.setRole(Role.CUSTOMER);
     user.setName("test user");
     user.setEmail("test email");
     when(userDao.findById(5L)).thenReturn(Optional.of(user));

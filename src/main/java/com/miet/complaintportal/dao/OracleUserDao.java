@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 
 public class OracleUserDao implements UserDao {
@@ -28,7 +29,7 @@ public class OracleUserDao implements UserDao {
       preparedStatement.setString(1, user.getName());
       preparedStatement.setString(2, user.getEmail());
       preparedStatement.setString(3, user.getPasswordHash());
-      preparedStatement.setString(4, user.getRole());
+      preparedStatement.setString(4, user.getRole().name());
 
       int rowsInserted = preparedStatement.executeUpdate();
       if (rowsInserted > 0) {
@@ -57,7 +58,7 @@ public class OracleUserDao implements UserDao {
           String name = rs.getString("name");
           String email = rs.getString("email");
           String pass_hash = rs.getString("password_hash");
-          String role = rs.getString("role");
+          Role role = Role.valueOf(rs.getString("role"));
           LocalDateTime created_at = rs.getObject("created_at", LocalDateTime.class);
           User user = new User(id, name, email, pass_hash, role, created_at);
           return Optional.of(user);
@@ -78,7 +79,7 @@ public class OracleUserDao implements UserDao {
           long id = rs.getLong("id");
           String name = rs.getString("name");
           String pass_hash = rs.getString("password_hash");
-          String role = rs.getString("role");
+          Role role = Role.valueOf(rs.getString("role"));
           LocalDateTime created_at = rs.getObject("created_at", LocalDateTime.class);
           User user = new User(id, name, email, pass_hash, role, created_at);
           return Optional.of(user);
@@ -91,7 +92,7 @@ public class OracleUserDao implements UserDao {
   @Override
   public List<User> findAllAgents() throws SQLException {
     String query = "SELECT * from users WHERE role = 'AGENT'";
-    List<User> users = new ArrayList<>();
+    List<User> agents = new ArrayList<>();
     try (Connection conn = connectionProvider.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(query)) {
@@ -100,12 +101,44 @@ public class OracleUserDao implements UserDao {
         String name = rs.getString("name");
         String email = rs.getString("email");
         String pass_hash = rs.getString("password_hash");
-        String role = rs.getString("role");
+        Role role = Role.valueOf(rs.getString("role"));
         LocalDateTime created_at = rs.getObject("created_at", LocalDateTime.class);
         User user = new User(id, name, email, pass_hash, role, created_at);
-        users.add(user);
+        agents.add(user);
       }
-      return users;
+      return agents;
+    }
+  }
+
+  @Override
+  public List<User> findAllCustomers() throws SQLException {
+    String query = "SELECT * from users WHERE role = 'CUSTOMER'";
+    List<User> customers = new ArrayList<>();
+    try (Connection conn = connectionProvider.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query)) {
+      while (rs.next()) {
+        long id = rs.getLong("id");
+        String name = rs.getString("name");
+        String email = rs.getString("email");
+        String pass_hash = rs.getString("password_hash");
+        Role role = Role.valueOf(rs.getString("role"));
+        LocalDateTime created_at = rs.getObject("created_at", LocalDateTime.class);
+        User user = new User(id, name, email, pass_hash, role, created_at);
+        customers.add(user);
+      }
+      return customers;
+    }
+  }
+
+  @Override
+  public void updateRole(long userId, Role newRole) throws SQLException {
+    String updateQuery = "UPDATE users set role = ? WHERE id = ?";
+    try (Connection conn = connectionProvider.getConnection();
+        PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+      updateStmt.setString(1, newRole.name());
+      updateStmt.setLong(2, userId);
+      updateStmt.executeUpdate();
     }
   }
 }

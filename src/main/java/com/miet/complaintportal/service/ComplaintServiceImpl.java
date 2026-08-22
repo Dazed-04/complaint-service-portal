@@ -16,6 +16,7 @@ import com.miet.complaintportal.exceptions.InvalidAgentException;
 import com.miet.complaintportal.model.Category;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.ComplaintStatus;
+import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.StatusHistory;
 import com.miet.complaintportal.model.User;
 
@@ -96,7 +97,7 @@ public class ComplaintServiceImpl implements ComplaintService {
       throw new InvalidAgentException(
           "Agent " + agentId + " references nonexistent agent ");
     }
-    if (!"AGENT".equals(agent.get().getRole())) {
+    if (agent.get().getRole() != Role.AGENT) {
       throw new InvalidAgentException("Provided agentId " + agentId + " is not an agent");
     }
     complaintDao.assignAgent(complaintId, agentId);

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import com.miet.complaintportal.exceptions.EmailAlreadyExistsException;
+import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 import com.miet.complaintportal.service.UserService;
 import com.miet.complaintportal.service.UserServiceImpl;
@@ -35,7 +36,7 @@ public class RegisterServlet extends HttpServlet {
     String password = request.getParameter("password");
 
     try {
-      User saved = userService.registerUser(name, email, password, "CUSTOMER");
+      User saved = userService.registerUser(name, email, password, Role.CUSTOMER);
       // success-> PRG: redirect to GET endpoint
       HttpSession session = request.getSession();
       session.setAttribute("registeredName", saved.getName());

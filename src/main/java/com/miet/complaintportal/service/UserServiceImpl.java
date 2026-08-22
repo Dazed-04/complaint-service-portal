@@ -8,6 +8,7 @@ import com.miet.complaintportal.dao.OracleUserDao;
 import com.miet.complaintportal.dao.UserDao;
 import com.miet.complaintportal.exceptions.EmailAlreadyExistsException;
 import com.miet.complaintportal.exceptions.InvalidCredentialsException;
+import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 
 public class UserServiceImpl implements UserService {
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User registerUser(String name, String email, String rawPassword, String role)
+  public User registerUser(String name, String email, String rawPassword, Role role)
       throws EmailAlreadyExistsException, SQLException {
 
     if (userDao.findByEmail(email).isPresent()) {

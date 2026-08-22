@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.miet.complaintportal.dao.UserDao;
 import com.miet.complaintportal.exceptions.EmailAlreadyExistsException;
 import com.miet.complaintportal.exceptions.InvalidCredentialsException;
+import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,7 +50,7 @@ class UserServiceImplTest {
       passedUser.setId(1L);
       return passedUser;
     });
-    User result = userService.registerUser("Test User", "new@email.com", rawPassword, "CUSTOMER");
+    User result = userService.registerUser("Test User", "new@email.com", rawPassword, Role.CUSTOMER);
 
     assertNotNull(result);
     assertEquals("Test User", result.getName());
@@ -68,12 +69,12 @@ class UserServiceImplTest {
   @Test
   void registerUser_throwsException_whenEmailAlreadyExists() throws Exception {
     when(userDao.findByEmail(anyString())).thenAnswer(invocation -> {
-      User exists = new User(1L, "test", invocation.getArgument(0), "unhashed", "CUSTOMER", LocalDateTime.now());
+      User exists = new User(1L, "test", invocation.getArgument(0), "unhashed", Role.CUSTOMER, LocalDateTime.now());
       return Optional.of(exists);
     });
 
     assertThrows(EmailAlreadyExistsException.class, () -> {
-      userService.registerUser("Existing User", "taken@example.com", "somePassword", "CUSTOMER");
+      userService.registerUser("Existing User", "taken@example.com", "somePassword", Role.CUSTOMER);
     });
     verify(userDao, never()).save(any());
   }
@@ -82,7 +83,7 @@ class UserServiceImplTest {
   void login_succeeds_withCorrectCredentials() throws Exception {
     String passHash = BCrypt.hashpw("1234", BCrypt.gensalt());
     when(userDao.findByEmail("test@email.com")).thenAnswer(invocation -> {
-      User exists = new User(1L, "test", invocation.getArgument(0), passHash, "CUSTOMER",
+      User exists = new User(1L, "test", invocation.getArgument(0), passHash, Role.CUSTOMER,
           LocalDateTime.now());
       return Optional.of(exists);
     });
@@ -95,7 +96,7 @@ class UserServiceImplTest {
   void login_throwsException_withWrongPassword() throws Exception {
     String passHash = BCrypt.hashpw("1234", BCrypt.gensalt());
     when(userDao.findByEmail("test@email.com")).thenAnswer(invocation -> {
-      User exists = new User(1L, "test", invocation.getArgument(0), passHash, "CUSTOMER",
+      User exists = new User(1L, "test", invocation.getArgument(0), passHash, Role.CUSTOMER,
           LocalDateTime.now());
       return Optional.of(exists);
     });

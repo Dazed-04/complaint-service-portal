@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 
 class OracleUserDaoIT {
@@ -24,7 +25,7 @@ class OracleUserDaoIT {
     User user = new User();
     user.setName("test");
     user.setEmail(email);
-    user.setRole("CUSTOMER");
+    user.setRole(Role.CUSTOMER);
     user.setPasswordHash("testPasswd");
     return user;
   }
@@ -44,7 +45,7 @@ class OracleUserDaoIT {
     assertTrue(found.isPresent());
     assertEquals(email, found.get().getEmail());
     assertEquals("test", found.get().getName());
-    assertEquals("CUSTOMER", found.get().getRole());
+    assertEquals(Role.CUSTOMER, found.get().getRole());
   }
 
   @Test
@@ -57,11 +58,35 @@ class OracleUserDaoIT {
   void findAllAgents_returnsOnlyAgents() throws Exception {
     User user = createUser();
     User agent = createUser();
-    agent.setRole("AGENT");
+    agent.setRole(Role.AGENT);
     User savedUser = userDao.save(user);
     User savedAgent = userDao.save(agent);
     List<User> agents = userDao.findAllAgents();
     assertTrue(agents.stream().anyMatch(a -> a.getId() == savedAgent.getId()));
     assertTrue(agents.stream().noneMatch(a -> a.getId() == savedUser.getId()));
+  }
+
+  @Test
+  void findAll_returnsOnlyCustomers() throws Exception {
+    User customer = createUser();
+    User agent = createUser();
+    agent.setRole(Role.AGENT);
+    User savedCustomer = userDao.save(customer);
+    User savedAgent = userDao.save(agent);
+    List<User> customers = userDao.findAllCustomers();
+    assertTrue(customers.stream().anyMatch(c -> c.getId() == savedCustomer.getId()));
+    assertTrue(customers.stream().noneMatch(c -> c.getId() == savedAgent.getId()));
+  }
+
+  @Test
+  void updateRole_supportsArbitraryRoleTransitions() throws Exception {
+    User customer = createUser();
+    User saved = userDao.save(customer);
+    userDao.updateRole(saved.getId(), Role.AGENT);
+    Optional<User> agent = userDao.findById(saved.getId());
+    assertEquals(Role.AGENT, agent.get().getRole());
+    userDao.updateRole(saved.getId(), Role.ADMIN);
+    Optional<User> admin = userDao.findById(saved.getId());
+    assertEquals(Role.ADMIN, admin.get().getRole());
   }
 }

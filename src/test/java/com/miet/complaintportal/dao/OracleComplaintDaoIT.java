@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import com.miet.complaintportal.model.Category;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.ComplaintStatus;
+import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.StatusHistory;
 import com.miet.complaintportal.model.User;
 
@@ -36,7 +37,7 @@ class OracleComplaintDaoIT {
     User user = new User();
     user.setName("test");
     user.setEmail(email);
-    user.setRole("CUSTOMER");
+    user.setRole(Role.CUSTOMER);
     user.setPasswordHash("testPasswd");
     User saved = userDao.save(user);
     return saved.getId();
@@ -47,7 +48,7 @@ class OracleComplaintDaoIT {
     User agent = new User();
     agent.setName("test");
     agent.setEmail(email);
-    agent.setRole("CUSTOMER");
+    agent.setRole(Role.CUSTOMER);
     agent.setPasswordHash("testPasswd");
     User saved = userDao.save(agent);
     return saved.getId();
