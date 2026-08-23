@@ -43,7 +43,7 @@ public class LoginServlet extends HttpServlet {
       HttpSession session = request.getSession(true);
       session.setAttribute("userId", user.getId());
       session.setAttribute("userName", user.getName());
-      session.setAttribute("userRole", user.getRole());
+      session.setAttribute("userRole", user.getRole().name());
       if (redirectPath != null) {
         response.sendRedirect(redirectPath);
       } else {
