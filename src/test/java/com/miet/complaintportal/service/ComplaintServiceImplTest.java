@@ -11,6 +11,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,11 +23,13 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.miet.complaintportal.dao.AttachmentDao;
 import com.miet.complaintportal.dao.CategoryDao;
 import com.miet.complaintportal.dao.ComplaintDao;
 import com.miet.complaintportal.dao.StatusHistoryDao;
 import com.miet.complaintportal.dao.UserDao;
 import com.miet.complaintportal.exceptions.InvalidAgentException;
+import com.miet.complaintportal.model.Attachment;
 import com.miet.complaintportal.model.Category;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.ComplaintStatus;
@@ -45,11 +48,13 @@ class ComplaintServiceImplTest {
   private CategoryDao categoryDao;
   @Mock
   private StatusHistoryDao statusHistoryDao;
+  @Mock
+  private AttachmentDao attachmentDao;
   private ComplaintService complaintService;
 
   @BeforeEach
   void setup() {
-    complaintService = new ComplaintServiceImpl(userDao, complaintDao, categoryDao, statusHistoryDao);
+    complaintService = new ComplaintServiceImpl(userDao, complaintDao, categoryDao, statusHistoryDao, attachmentDao);
   }
 
   @Test
@@ -132,9 +137,20 @@ class ComplaintServiceImplTest {
     history.setNewStatus(ComplaintStatus.IN_PROGRESS);
     when(statusHistoryDao.findByComplaintId(1L)).thenReturn(List.of(history));
 
+    Attachment attachment = new Attachment();
+    attachment.setComplaintId(1L);
+    attachment.setContentType("text/plain");
+    attachment.setFilename("test attachment");
+    attachment.setFileData("test byte array".getBytes());
+    when(attachmentDao.findByComplaintId(1L)).thenReturn(List.of(attachment));
+
     Optional<ComplaintDetail> complaintDetail = complaintService.viewComplaintDetail(1L);
     assertNotEquals(Optional.empty(), complaintDetail.get());
     assertEquals("Test Category", complaintDetail.get().getCategoryName());
+    assertEquals("text/plain", complaintDetail.get().getAttachments().get(0).getContentType());
+    assertEquals("test attachment", complaintDetail.get().getAttachments().get(0).getFilename());
+    assertTrue(
+        Arrays.equals("test byte array".getBytes(), complaintDetail.get().getAttachments().get(0).getFileData()));
   }
 
   @Test

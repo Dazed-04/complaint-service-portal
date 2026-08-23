@@ -4,8 +4,10 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import com.miet.complaintportal.dao.AttachmentDao;
 import com.miet.complaintportal.dao.CategoryDao;
 import com.miet.complaintportal.dao.ComplaintDao;
+import com.miet.complaintportal.dao.OracleAttachmentDao;
 import com.miet.complaintportal.dao.OracleCategoryDao;
 import com.miet.complaintportal.dao.OracleComplaintDao;
 import com.miet.complaintportal.dao.OracleStatusHistoryDao;
@@ -13,6 +15,7 @@ import com.miet.complaintportal.dao.OracleUserDao;
 import com.miet.complaintportal.dao.StatusHistoryDao;
 import com.miet.complaintportal.dao.UserDao;
 import com.miet.complaintportal.exceptions.InvalidAgentException;
+import com.miet.complaintportal.model.Attachment;
 import com.miet.complaintportal.model.Category;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.ComplaintStatus;
@@ -26,17 +29,20 @@ public class ComplaintServiceImpl implements ComplaintService {
   private final ComplaintDao complaintDao;
   private final CategoryDao categoryDao;
   private final StatusHistoryDao statusHistoryDao;
+  private final AttachmentDao attachmentDao;
 
   public ComplaintServiceImpl() {
-    this(new OracleUserDao(), new OracleComplaintDao(), new OracleCategoryDao(), new OracleStatusHistoryDao());
+    this(new OracleUserDao(), new OracleComplaintDao(), new OracleCategoryDao(), new OracleStatusHistoryDao(),
+        new OracleAttachmentDao());
   }
 
   public ComplaintServiceImpl(UserDao userDao, ComplaintDao complaintDao, CategoryDao categoryDao,
-      StatusHistoryDao statusHistoryDao) {
+      StatusHistoryDao statusHistoryDao, AttachmentDao attachmentDao) {
     this.userDao = userDao;
     this.complaintDao = complaintDao;
     this.categoryDao = categoryDao;
     this.statusHistoryDao = statusHistoryDao;
+    this.attachmentDao = attachmentDao;
   }
 
   @Override
@@ -81,7 +87,8 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
     String categoryName = categoryOpt.get().getName();
     List<StatusHistory> history = statusHistoryDao.findByComplaintId(complaintId);
-    ComplaintDetail complaintDetail = new ComplaintDetail(complaint.get(), categoryName, history);
+    List<Attachment> attachments = attachmentDao.findByComplaintId(complaintId);
+    ComplaintDetail complaintDetail = new ComplaintDetail(complaint.get(), categoryName, history, attachments);
     return Optional.of(complaintDetail);
   }
 
