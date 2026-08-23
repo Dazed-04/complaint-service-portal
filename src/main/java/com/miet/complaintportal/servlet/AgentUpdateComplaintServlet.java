@@ -36,22 +36,26 @@ public class AgentUpdateComplaintServlet extends HttpServlet {
       }
 
       HttpSession session = request.getSession(false);
-      long sessionAgentId = (long) session.getAttribute("userId");
+      long sessionUserId = (long) session.getAttribute("userId");
       Long agentId = detail.get().getComplaint().getAgentId();
+      String userRole = (String) session.getAttribute("userRole");
+      boolean isAdmin = "ADMIN".equals(userRole);
 
-      if (agentId == null) {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        request.setAttribute("errorMessage", "No agent assigned to complaint.");
-        request.getRequestDispatcher("/error.jsp").forward(request, response);
-        return;
-      }
+      if (!isAdmin) {
+        if (agentId == null) {
+          response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+          request.setAttribute("errorMessage", "No agent assigned to complaint.");
+          request.getRequestDispatcher("/error.jsp").forward(request, response);
+          return;
+        }
 
-      boolean isAgent = sessionAgentId == agentId;
-      if (!isAgent) {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        request.setAttribute("errorMessage", "You do not have permission to view this complaint.");
-        request.getRequestDispatcher("/error.jsp").forward(request, response);
-        return;
+        if (sessionUserId != agentId) {
+          response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+          request.setAttribute("errorMessage", "You do not have permission to view this complaint.");
+          request.getRequestDispatcher("/error.jsp").forward(request, response);
+          return;
+        }
+
       }
 
       request.setAttribute("detail", detail.get());
@@ -74,7 +78,9 @@ public class AgentUpdateComplaintServlet extends HttpServlet {
       long complaintId = Long.parseLong(request.getParameter("id"));
       Optional<ComplaintDetail> detail = complaintService.viewComplaintDetail(complaintId);
       HttpSession session = request.getSession(false);
-      long sessionAgentId = (long) session.getAttribute("userId");
+      long sessionUserId = (long) session.getAttribute("userId");
+      String userRole = (String) session.getAttribute("userRole");
+      boolean isAdmin = "ADMIN".equals(userRole);
 
       if (detail.isEmpty()) {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -87,23 +93,29 @@ public class AgentUpdateComplaintServlet extends HttpServlet {
       ComplaintStatus newStatus = ComplaintStatus.valueOf(request.getParameter("newStatus"));
       String remark = request.getParameter("remark");
 
-      if (agentId == null) {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        request.setAttribute("errorMessage", "No agent assigned to complaint.");
-        request.getRequestDispatcher("/error.jsp").forward(request, response);
-        return;
+      if (!isAdmin) {
+
+        if (agentId == null) {
+          response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+          request.setAttribute("errorMessage", "No agent assigned to complaint.");
+          request.getRequestDispatcher("/error.jsp").forward(request, response);
+          return;
+        }
+
+        if (sessionUserId != agentId) {
+          response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+          request.setAttribute("errorMessage", "You do not have permission to view this complaint.");
+          request.getRequestDispatcher("/error.jsp").forward(request, response);
+          return;
+        }
       }
 
-      boolean isAgent = sessionAgentId == agentId;
-      if (!isAgent) {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        request.setAttribute("errorMessage", "You do not have permission to view this complaint.");
-        request.getRequestDispatcher("/error.jsp").forward(request, response);
-        return;
+      complaintService.updateComplaintStatus(complaintId, newStatus, sessionUserId, remark);
+      if (isAdmin) {
+        response.sendRedirect(request.getContextPath() + "/admin/assign");
+      } else {
+        response.sendRedirect(request.getContextPath() + "/agent/assigned");
       }
-
-      complaintService.updateComplaintStatus(complaintId, newStatus, sessionAgentId, remark);
-      response.sendRedirect(request.getContextPath() + "/agent/assigned");
     } catch (IllegalArgumentException e) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       request.setAttribute("errorMessage", "Invalid status update request.");

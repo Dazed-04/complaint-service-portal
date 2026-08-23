@@ -23,22 +23,25 @@ public class ComplaintDetailServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
       long complaintId = Long.parseLong(request.getParameter("id"));
-
       Optional<ComplaintDetail> detail = complaintService.viewComplaintDetail(complaintId);
+      HttpSession session = request.getSession(false);
+      long sessionUserId = (long) session.getAttribute("userId");
+      String userRole = (String) session.getAttribute("userRole");
+      boolean isStaff = "AGENT".equals(userRole) || "ADMIN".equals(userRole);
+
       if (detail.isEmpty()) {
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        request.setAttribute("errorMessage", "No complaint found with that id");
+        if (isStaff) {
+          response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+          request.setAttribute("errorMessage", "No complaint found with that id");
+        } else {
+          response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+          request.setAttribute("errorMessage", "You do not have permission to view this complaint.");
+        }
         request.getRequestDispatcher("/error.jsp").forward(request, response);
         return;
       }
 
-      HttpSession session = request.getSession(false);
-      long sessionUserId = (long) session.getAttribute("userId");
-      String userRole = (String) session.getAttribute("userRole");
-
       boolean isOwner = detail.get().getComplaint().getCustomerId() == sessionUserId;
-      boolean isStaff = "AGENT".equals(userRole) || "ADMIN".equals(userRole);
-
       if (!isOwner && !isStaff) {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         request.setAttribute("errorMessage", "You do not have permission to view this complaint.");

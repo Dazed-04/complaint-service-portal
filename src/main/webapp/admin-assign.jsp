@@ -22,6 +22,7 @@
             <th>Status</th>
             <th>Current Agent</th>
             <th>Agents</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -59,6 +60,11 @@
                   </label><br>
                   <button type="submit">Assign</button>
                 </form>
+              </td>
+              <td>
+                <c:if test="${c.agentId != null}">
+                  <a href="${pageContext.request.contextPath}/agent/update?id=${c.id}">Update Status</a>
+                </c:if>
               </td>
             </tr>
           </c:forEach>
