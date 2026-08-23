@@ -14,6 +14,8 @@ public interface UserDao {
 
   Optional<User> findByEmail(String email) throws SQLException;
 
+  List<User> findAll() throws SQLException;
+
   List<User> findAllAgents() throws SQLException;
 
   List<User> findAllCustomers() throws SQLException;

@@ -90,6 +90,27 @@ public class OracleUserDao implements UserDao {
   }
 
   @Override
+  public List<User> findAll() throws SQLException {
+    String query = "SELECT * from users ORDER BY UPPER(name)";
+    List<User> users = new ArrayList<>();
+    try (Connection conn = connectionProvider.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query)) {
+      while (rs.next()) {
+        long id = rs.getLong("id");
+        String name = rs.getString("name");
+        String email = rs.getString("email");
+        String pass_hash = rs.getString("password_hash");
+        Role role = Role.valueOf(rs.getString("role"));
+        LocalDateTime created_at = rs.getObject("created_at", LocalDateTime.class);
+        User user = new User(id, name, email, pass_hash, role, created_at);
+        users.add(user);
+      }
+      return users;
+    }
+  }
+
+  @Override
   public List<User> findAllAdmins() throws SQLException {
     String query = "SELECT * from users WHERE role = 'ADMIN'";
     List<User> admins = new ArrayList<>();
