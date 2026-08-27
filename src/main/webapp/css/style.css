@@ -1,0 +1,154 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #222;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  text-align: left;
+}
+
+form {
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 0.75rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.inline-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #1e1e2e;
+  color: #eee;
+  font-size: 1rem;
+  width: 240px;
+  box-sizing: border-box;
+}
+
+textarea {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #1e1e2e;
+  color: #eee;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 400px;
+  min-height: 4rem;
+  box-sizing: border-box;
+  display: block;
+}
+
+select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #1e1e2e;
+  color: #eee;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #4a5aad;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: #5a6bcf;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.4rem 0.9rem;
+  background-color: #4a5aad;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #5a6bcf;
+}
+
+.action-link {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  background-color: #333a5c;
+  color: #cdd6ff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.action-link:hover {
+  background-color: #444d7a;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+th {
+  background-color: #2a2f4a;
+  padding: 0.6rem;
+  text-align: left;
+}
+
+td {
+  padding: 0.6rem;
+  border-top: 1px solid #333a5c;
+}
+
+tbody tr:hover {
+  background-color: #23273f;
+}
+
+td.actions {
+  text-align: center;
+}
