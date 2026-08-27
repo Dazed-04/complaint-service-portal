@@ -20,18 +20,15 @@ and Hibernate later automate.
 
 ## Tech Stack
 
-Java 17 · Jakarta Servlets/JSP (Tomcat 10.1)
-JDBC · Oracle Database 21c (Docker)
-JUnit 5 + Mockito (unit tests) · Maven Failsafe (integration tests)
-BCrypt · JSTL
+- Java 17 · Jakarta Servlets/JSP (Tomcat 10.1)
+- JDBC · Oracle Database 21c (Docker)
+- JUnit 5 + Mockito (unit tests) · Maven Failsafe (integration tests)
+- BCrypt · JSTL
 
 ## Architecture
 
-Layered: Servlet (controller) → Service (business logic) → DAO (persistence) →
-Oracle.
-DAOs and Services are built against interfaces throughout, with Oracle-
-specific implementations — deliberately mirroring the shape Spring's dependency
-injection and repository pattern will later automate.
+Layered: Servlet (controller) → Service (business logic) → DAO (persistence) → Oracle.
+DAOs and Services are built against interfaces throughout, with Oracle-specific implementations — deliberately mirroring the shape Spring's dependency injection and repository pattern will later automate.
 
 ## Running Locally
 
