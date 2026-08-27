@@ -34,9 +34,6 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      - name: Wait for Oracle to be ready
-        run: sleep 60
-
       - name: Create test properties file
         run: |
           cat <<EOF > src/main/resources/db.properties
@@ -45,12 +42,22 @@ jobs:
           db.password=${{ secrets.APP_USER_PASSWORD }}
           EOF
 
-      - name: Run schema scripts
+      - name: Wait for Oracle to be ready
+        run: sleep 60
+
+      - name: Copy schema files and execute
         run: |
+          CONTAINER_ID=$(docker ps -q --filter ancestor=gvenzl/oracle-xe:21-slim)
+
+          # Copy only the contents inside schema/ to /tmp/
+          docker cp src/main/resources/schema/. "$CONTAINER_ID":/tmp/
+
+          # Execute each script from /tmp
           for f in src/main/resources/schema/*.sql; do
-            echo "Running $f"
-            docker exec $(docker ps -q --filter ancestor=gvenzl/oracle-xe:21-slim) \
-              sqlplus -s complaint_app/${{ secrets.APP_USER_PASSWORD }}@localhost:1521/XEPDB1 @$f
+            filename=$(basename "$f")
+            echo "Running /tmp/$filename"
+            docker exec "$CONTAINER_ID" \
+              sqlplus -s complaint_app/${{ secrets.APP_USER_PASSWORD }}@localhost:1521/XEPDB1 @"/tmp/$filename"
           done
 
       - name: Run tests
