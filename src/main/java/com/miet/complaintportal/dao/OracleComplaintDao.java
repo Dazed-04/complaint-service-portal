@@ -191,7 +191,7 @@ public class OracleComplaintDao implements ComplaintDao {
 
   @Override
   public List<Complaint> findAll() throws SQLException {
-    String query = "SELECT * from complaints";
+    String query = "SELECT * from complaints ORDER BY created_at DESC";
     List<Complaint> complaints = new ArrayList<>();
     try (Connection conn = connectionProvider.getConnection();
         Statement stmt = conn.createStatement();
