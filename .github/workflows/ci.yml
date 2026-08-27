@@ -37,6 +37,14 @@ jobs:
       - name: Wait for Oracle to be ready
         run: sleep 60
 
+      - name: Create test properties file
+        run: |
+          cat <<EOF > src/main/resources/db.properties
+          db.url=jdbc:oracle:thin:@localhost:1521/XEPDB1
+          db.user=complaint_app
+          db.password=${{ secrets.APP_USER_PASSWORD }}
+          EOF
+
       - name: Run schema scripts
         run: |
           for f in src/main/resources/schema/*.sql; do
