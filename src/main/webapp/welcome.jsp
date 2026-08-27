@@ -4,6 +4,7 @@
 
   <head>
     <title>Welcome</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   </head>
 
   <body>
@@ -11,5 +12,6 @@
       <c:out value="${sessionScope.userName}" />.
     </h3>
   </body>
+  <jsp:include page="/nav.jsp" />
 
   </html>

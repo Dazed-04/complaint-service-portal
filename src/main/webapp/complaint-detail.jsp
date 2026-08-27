@@ -4,9 +4,11 @@
 
   <head>
     <title>Complaint Detail</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   </head>
 
   <body>
+    <p><a class="action-link" href="${pageContext.request.contextPath}/welcome.jsp">&larr; Home</a></p>
     <h1>
       <c:out value="${detail.complaint.title}" />
     </h1>
@@ -26,7 +28,7 @@
       <label>Attach files
         <input type="file" name="file">
       </label>
-      <button type="submit">Upload</button>
+      <button type="submit" class="btn">Upload</button>
     </form>
 
     <h2>Status History</h2>
@@ -34,7 +36,12 @@
       <p>No status changes recorded yet.</p>
     </c:if>
     <c:if test="${not empty detail.history}">
-      <table border="1" cellpadding="5">
+      <table>
+        <colgroup>
+          <col style="width: 33%">
+          <col style="width: 33%">
+          <col style="width: 33%">
+        </colgroup>
         <thead>
           <tr>
             <th>Changed At</th>
@@ -59,11 +66,16 @@
         </tbody>
       </table>
     </c:if>
+    <h2>Attached Files</h2>
     <c:if test="${empty detail.attachments}">
       <p>No attachments for this complaint</p>
     </c:if>
     <c:if test="${not empty detail.attachments}">
-      <table border="1" cellpadding="5">
+      <table>
+        <colgroup>
+          <col style="width: 75%">
+          <col style="width: 25%">
+        </colgroup>
         <thead>
           <tr>
             <th>Filename</th>
@@ -77,7 +89,7 @@
                 <c:out value="${a.filename}" />
               </td>
               <td>
-                <p><a
+                <p><a class="btn"
                     href="${pageContext.request.contextPath}/complaints/download?complaintId=${detail.complaint.id}&attachmentId=${a.id}">download</a>
                 </p>
               </td>
@@ -86,7 +98,7 @@
         </tbody>
       </table>
     </c:if>
-    <p><a href="${pageContext.request.contextPath}/complaints/view">Back to my complaints</a></p>
+    <p><a class="action-link" href="${pageContext.request.contextPath}/complaints/view">Back to my complaints</a></p>
   </body>
 
   </html>

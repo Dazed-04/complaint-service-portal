@@ -4,14 +4,24 @@
 
   <head>
     <title>Assigned Complaints</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   </head>
 
   <body>
+    <p><a class="action-link" href="${pageContext.request.contextPath}/welcome.jsp">&larr; Home</a></p>
     <h1>Complaints assigned to agent:</h1>
     <c:if test="${empty complaints}">
       <p style="color: red;">No complaints assigned to agent.</p>
     </c:if>
-    <table border="1" cellpadding="5">
+    <table>
+      <colgroup>
+        <col style="width: 8%">
+        <col style="width: 15%">
+        <col style="width: 15%">
+        <col style="width: 15%">
+        <col style="width: 32%">
+        <col style="width: 15%">
+      </colgroup>
       <thead>
         <tr>
           <th>S.no</th>
@@ -40,8 +50,8 @@
             <td>
               <c:out value="${c.description}" />
             </td>
-            <td>
-              <a href="${pageContext.request.contextPath}/agent/update?id=${c.id}">update</a>
+            <td class="actions">
+              <a class="btn" href="${pageContext.request.contextPath}/agent/update?id=${c.id}">update</a>
             </td>
           </tr>
         </c:forEach>

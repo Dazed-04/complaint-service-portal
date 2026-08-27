@@ -4,14 +4,24 @@
 
   <head>
     <title>View Complaints</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   </head>
 
   <body>
+    <p><a class="action-link" href="${pageContext.request.contextPath}/welcome.jsp">&larr; Home</a></p>
     <h1>Complaints registered by user:</h1>
     <c:if test="${empty complaints}">
       <p style="color: red;">No complaints registered by user.</p>
     </c:if>
-    <table border="1" cellpadding="5">
+    <table>
+      <colgroup>
+        <col style="width: 8%">
+        <col style="width: 17%">
+        <col style="width: 17%">
+        <col style="width: 18%">
+        <col style="width: 30%">
+        <col style="width: 10%">
+      </colgroup>
       <thead>
         <tr>
           <th>S.no</th>
@@ -40,8 +50,8 @@
             <td>
               <c:out value="${c.description}" />
             </td>
-            <td>
-              <a href="${pageContext.request.contextPath}/complaints/detail?id=${c.id}">View</a>
+            <td class="actions">
+              <a class="btn" href="${pageContext.request.contextPath}/complaints/detail?id=${c.id}">View</a>
             </td>
           </tr>
         </c:forEach>

@@ -4,9 +4,11 @@
 
   <head>
     <title>Manage Users</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   </head>
 
   <body>
+    <p><a class="action-link" href="${pageContext.request.contextPath}/welcome.jsp">&larr; Home</a></p>
     <h1>Manage Users</h1>
     <c:if test="${not empty errorMessage}">
       <p style="color: red;">
@@ -14,7 +16,13 @@
       </p>
     </c:if>
     <c:if test="${not empty users}">
-      <table border="1" cellpadding="5">
+      <table>
+        <colgroup>
+          <col style="width: 8%">
+          <col style="width: 30%">
+          <col style="width: 18%">
+          <col style="width: 44%">
+        </colgroup>
         <thead>
           <tr>
             <th>Id</th>
@@ -38,19 +46,21 @@
               <td>
                 <form action="${pageContext.request.contextPath}/admin/manage" method="post">
                   <input type="hidden" name="userId" value="${u.id}">
-                  <label>New Role:
+                  <label for="newRole-${u.id}">New Role:</label>
+                  <div class="inline-form">
                     <c:if test="${empty roles}">
                       <p>No roles available</p>
                     </c:if>
                     <c:if test="${not empty roles}">
-                      <select name="newRole" required>
+                      <select name="newRole" id="newRole-${u.id}" required>
+                        <option value="" disabled selected>-- Select new role --</option>
                         <c:forEach var="r" items="${roles}">
                           <option value="${r}">${r}</option>
                         </c:forEach>
                       </select>
                     </c:if>
-                  </label><br>
-                  <button type="submit">Change Role</button>
+                    <button type="submit" class="btn">Change Role</button>
+                  </div>
                 </form>
               </td>
             </tr>

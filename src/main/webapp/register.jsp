@@ -4,6 +4,7 @@
 
   <head>
     <title>Register</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   </head>
 
   <body>
@@ -12,10 +13,19 @@
       <p style="color: red;">${errorMessage}</p>
     </c:if>
     <form action="register" method="post">
-      <label>Name: <input type="text" name="name" required></label><br>
-      <label>Email: <input type="email" name="email" required></label><br>
-      <label>Password: <input type="password" name="password" required></label><br>
-      <button type="submit">Register</button>
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" class="btn">Register</button>
     </form>
   </body>
 

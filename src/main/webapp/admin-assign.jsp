@@ -4,9 +4,11 @@
 
   <head>
     <title>Assign Agents</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   </head>
 
   <body>
+    <p><a class="action-link" href="${pageContext.request.contextPath}/welcome.jsp">&larr; Home</a></p>
     <h1>Assign Agents</h1>
     <c:if test="${not empty errorMessage}">
       <p style="color: red;">
@@ -14,7 +16,14 @@
       </p>
     </c:if>
     <c:if test="${not empty complaints}">
-      <table border="1" cellpadding="5">
+      <table>
+        <colgroup>
+          <col style="width: 8%">
+          <col style="width: 30%">
+          <col style="width: 16%">
+          <col style="width: 16%">
+          <col style="width: 30%">
+        </colgroup>
         <thead>
           <tr>
             <th>Id</th>
@@ -48,23 +57,23 @@
               <td>
                 <form action="${pageContext.request.contextPath}/admin/assign" method="post">
                   <input type="hidden" name="complaintId" value="${c.id}">
-                  <label>New Agent:
-                    <select name="agentId" required>
+                  <label for="agentId-${c.id}">New Agent:</label>
+                  <div class="inline-form">
+                    <c:if test="${empty agents}">
+                      <p>No agents available</p>
+                    </c:if>
+                    <select name="agentId" id="agentId-${c.id}" required>
+                      <option value="" disabled selected>- Select agent -</option>
                       <c:forEach var="a" items="${agents}">
-                        <c:if test="{empty agents}">
-                          <p>No agents</p>
-                        </c:if>
                         <option value="${a.id}">${a.name}</option>
                       </c:forEach>
                     </select>
-                  </label><br>
-                  <button type="submit">Assign</button>
+                    <button type="submit" class="btn">Assign</button>
+                  </div>
                 </form>
               </td>
-              <td>
-                <c:if test="${c.agentId != null}">
-                  <a href="${pageContext.request.contextPath}/agent/update?id=${c.id}">Update Status</a>
-                </c:if>
+              <td class="actions">
+                <a class="btn" href="${pageContext.request.contextPath}/agent/update?id=${c.id}">Update</a>
               </td>
             </tr>
           </c:forEach>

@@ -4,9 +4,11 @@
 
   <head>
     <title>Categories</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   </head>
 
   <body>
+    <p><a class="action-link" href="${pageContext.request.contextPath}/welcome.jsp">&larr; Home</a></p>
     <h1>Create new category</h1>
     <c:if test="${not empty errorMessage}">
       <p style="color: red;">
@@ -14,15 +16,26 @@
       </p>
     </c:if>
     <form action="${pageContext.request.contextPath}/admin/categories" method="post">
-      <label>Name: <input type="text" name="name" required></label><br>
-      <label>Description: <textarea name="description"></textarea></label><br>
-      <button type="submit">Create</button>
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea>
+      </div>
+      <button type="submit" class="btn">Create</button>
     </form>
     <c:if test="${empty categories}">
       <p>No categories created yet.</p>
     </c:if>
     <c:if test="${not empty categories}">
-      <table border="1" cellpadding="5">
+      <table>
+        <colgroup>
+          <col style="width: 10%">
+          <col style="width: 30%">
+          <col style="width: 60%">
+        </colgroup>
         <thead>
           <tr>
             <th>S.no</th>

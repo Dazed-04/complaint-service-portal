@@ -4,6 +4,7 @@
 
   <head>
     <title>Registered</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   </head>
 
   <body>
@@ -14,6 +15,8 @@
     <p>Email:
       <c:out value="${sessionScope.registeredEmail}" />
     </p>
+
+    <p><a class="action-link" href="${pageContext.request.contextPath}/login">← Go to login</a></p>
   </body>
 
   </html>
