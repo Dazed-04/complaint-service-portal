@@ -42,9 +42,6 @@ jobs:
           db.password=${{ secrets.APP_USER_PASSWORD }}
           EOF
 
-      - name: Wait for Oracle to be ready
-        run: sleep 60
-
       - name: Copy schema files and execute
         run: |
           CONTAINER_ID=$(docker ps -q --filter ancestor=gvenzl/oracle-xe:21-slim)
