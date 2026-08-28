@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      oracle:
+        image: gvenzl/oracle-xe:21-slim
+        ports:
+          - 1521:1521
+        env:
+          ORACLE_PASSWORD: ${{ secrets.ORACLE_PASSWORD }}
+          APP_USER: complaint_app
+          APP_USER_PASSWORD: ${{ secrets.APP_USER_PASSWORD }}
+        options: >-
+          --health-cmd healthcheck.sh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Create test properties file
+        run: |
+          cat <<EOF > src/main/resources/db.properties
+          db.url=jdbc:oracle:thin:@localhost:1521/XEPDB1
+          db.user=complaint_app
+          db.password=${{ secrets.APP_USER_PASSWORD }}
+          EOF
+
+      - name: Copy schema files and execute
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter ancestor=gvenzl/oracle-xe:21-slim)
+
+          # Copy only the contents inside schema/ to /tmp/
+          docker cp src/main/resources/schema/. "$CONTAINER_ID":/tmp/
+
+          # Execute each script from /tmp
+          for f in src/main/resources/schema/*.sql; do
+            filename=$(basename "$f")
+            echo "Running /tmp/$filename"
+            docker exec "$CONTAINER_ID" \
+              sqlplus -s complaint_app/${{ secrets.APP_USER_PASSWORD }}@localhost:1521/XEPDB1 @"/tmp/$filename"
+          done
+
+      - name: Run tests
+        run: mvn -B verify
