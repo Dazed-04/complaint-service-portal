@@ -26,7 +26,7 @@
     <form action="${pageContext.request.contextPath}/complaints/attach" method="post" enctype="multipart/form-data">
       <input type="hidden" name="complaintId" value="${detail.complaint.id}">
       <label>Attach files
-        <input type="file" name="file">
+        <input type="file" name="file" required>
       </label>
       <button type="submit" class="btn">Upload</button>
     </form>

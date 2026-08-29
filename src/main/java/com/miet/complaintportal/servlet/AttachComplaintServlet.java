@@ -60,6 +60,12 @@ public class AttachComplaintServlet extends HttpServlet {
       }
 
       Part filePart = request.getPart("file");
+      if (filePart == null || filePart.getSize() == 0) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        request.setAttribute("errorMessage", "Please select a file to upload.");
+        request.getRequestDispatcher("/error.jsp").forward(request, response);
+        return;
+      }
       String filename = filePart.getSubmittedFileName();
       String contentType = filePart.getContentType();
       byte[] fileData = filePart.getInputStream().readAllBytes();
