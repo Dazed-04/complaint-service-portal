@@ -25,8 +25,17 @@ import jakarta.servlet.http.Part;
 @MultipartConfig(maxFileSize = 5 * 1024 * 1024, maxRequestSize = 6 * 1024 * 1024)
 public class AttachComplaintServlet extends HttpServlet {
 
-  private final AttachmentService attachmentService = new AttachmentServiceImpl();
-  private final ComplaintService complaintService = new ComplaintServiceImpl();
+  private final AttachmentService attachmentService;
+  private final ComplaintService complaintService;
+
+  public AttachComplaintServlet() {
+    this(new AttachmentServiceImpl(), new ComplaintServiceImpl());
+  }
+
+  public AttachComplaintServlet(AttachmentService attachmentService, ComplaintService complaintService) {
+    this.attachmentService = attachmentService;
+    this.complaintService = complaintService;
+  }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)

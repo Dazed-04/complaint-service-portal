@@ -17,7 +17,15 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/complaints/detail")
 public class ComplaintDetailServlet extends HttpServlet {
-  private ComplaintService complaintService = new ComplaintServiceImpl();
+  private ComplaintService complaintService;
+
+  public ComplaintDetailServlet() {
+    this(new ComplaintServiceImpl());
+  }
+
+  public ComplaintDetailServlet(ComplaintService complaintService) {
+    this.complaintService = complaintService;
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

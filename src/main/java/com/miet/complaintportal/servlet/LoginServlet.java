@@ -19,7 +19,15 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-  private final UserService userService = new UserServiceImpl();
+  private final UserService userService;
+
+  public LoginServlet() {
+    this(new UserServiceImpl());
+  }
+
+  public LoginServlet(UserService userService) {
+    this.userService = userService;
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
