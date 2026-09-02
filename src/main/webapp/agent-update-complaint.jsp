@@ -79,39 +79,38 @@
           </c:forEach>
         </tbody>
       </table>
-      <h2>Attached Files</h2>
-      <c:if test="${empty detail.attachments}">
-        <p>No attachments for this complaint</p>
-      </c:if>
-      <c:if test="${not empty detail.attachments}">
-        <table>
-          <colgroup>
-            <col style="width: 75%">
-            <col style="width: 25%">
-          </colgroup>
-          <thead>
+    </c:if>
+    <h2>Attached Files</h2>
+    <c:if test="${empty detail.attachments}">
+      <p>No attachments for this complaint</p>
+    </c:if>
+    <c:if test="${not empty detail.attachments}">
+      <table>
+        <colgroup>
+          <col style="width: 75%">
+          <col style="width: 25%">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th>Download</th>
+          </tr>
+        </thead>
+        <tbody>
+          <c:forEach var="a" items="${detail.attachments}">
             <tr>
-              <th>Filename</th>
-              <th>Download</th>
+              <td>
+                <c:out value="${a.filename}" />
+              </td>
+              <td>
+                <p><a class="btn"
+                    href="${pageContext.request.contextPath}/complaints/download?complaintId=${detail.complaint.id}&attachmentId=${a.id}">download</a>
+                </p>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            <c:forEach var="a" items="${detail.attachments}">
-              <tr>
-                <td>
-                  <c:out value="${a.filename}" />
-                </td>
-                <td>
-                  <p><a class="btn"
-                      href="${pageContext.request.contextPath}/complaints/download?complaintId=${detail.complaint.id}&attachmentId=${a.id}">download</a>
-                  </p>
-                </td>
-              </tr>
-            </c:forEach>
-          </tbody>
-        </table>
-      </c:if>
-
+          </c:forEach>
+        </tbody>
+      </table>
     </c:if>
     <p><a class="action-link" href="${pageContext.request.contextPath}/agent/assigned">Back to assigned complaints</a>
     </p>
