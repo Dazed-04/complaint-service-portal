@@ -3,14 +3,19 @@ package com.miet.complaintportal.service;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.miet.complaintportal.dao.CategoryDao;
 import com.miet.complaintportal.dao.OracleCategoryDao;
 import com.miet.complaintportal.exceptions.CategoryAlreadyExistsException;
 import com.miet.complaintportal.exceptions.CategoryNameRequiredException;
 import com.miet.complaintportal.model.Category;
 
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
+  @Autowired
   private final CategoryDao categoryDao;
 
   public CategoryServiceImpl() {

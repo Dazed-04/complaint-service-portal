@@ -3,10 +3,12 @@ package com.miet.complaintportal.servlet;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import com.miet.complaintportal.exceptions.InvalidCredentialsException;
 import com.miet.complaintportal.model.User;
 import com.miet.complaintportal.service.UserService;
-import com.miet.complaintportal.service.UserServiceImpl;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -19,14 +21,20 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-  private final UserService userService;
-
-  public LoginServlet() {
-    this(new UserServiceImpl());
-  }
+  @Autowired
+  private UserService userService;
 
   public LoginServlet(UserService userService) {
     this.userService = userService;
+  }
+
+  public LoginServlet() {
+  }
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
   }
 
   @Override

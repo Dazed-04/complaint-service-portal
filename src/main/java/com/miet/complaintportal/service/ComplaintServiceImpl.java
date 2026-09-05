@@ -4,6 +4,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.miet.complaintportal.dao.AttachmentDao;
 import com.miet.complaintportal.dao.CategoryDao;
 import com.miet.complaintportal.dao.ComplaintDao;
@@ -23,13 +26,19 @@ import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.StatusHistory;
 import com.miet.complaintportal.model.User;
 
+@Service
 public class ComplaintServiceImpl implements ComplaintService {
 
-  private final UserDao userDao;
-  private final ComplaintDao complaintDao;
-  private final CategoryDao categoryDao;
-  private final StatusHistoryDao statusHistoryDao;
-  private final AttachmentDao attachmentDao;
+  @Autowired
+  private UserDao userDao;
+  @Autowired
+  private ComplaintDao complaintDao;
+  @Autowired
+  private CategoryDao categoryDao;
+  @Autowired
+  private StatusHistoryDao statusHistoryDao;
+  @Autowired
+  private AttachmentDao attachmentDao;
 
   public ComplaintServiceImpl() {
     this(new OracleUserDao(), new OracleComplaintDao(), new OracleCategoryDao(), new OracleStatusHistoryDao(),

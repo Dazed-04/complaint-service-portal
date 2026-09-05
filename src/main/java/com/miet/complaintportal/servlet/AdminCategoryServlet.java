@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import com.miet.complaintportal.exceptions.CategoryAlreadyExistsException;
 import com.miet.complaintportal.exceptions.CategoryNameRequiredException;
 import com.miet.complaintportal.model.Category;
 import com.miet.complaintportal.service.CategoryService;
-import com.miet.complaintportal.service.CategoryServiceImpl;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,7 +20,17 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/admin/categories")
 public class AdminCategoryServlet extends HttpServlet {
-  private final CategoryService categoryService = new CategoryServiceImpl();
+  @Autowired
+  private CategoryService categoryService;
+
+  public AdminCategoryServlet() {
+  }
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
+  }
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {

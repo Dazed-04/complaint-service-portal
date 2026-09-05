@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import com.miet.complaintportal.model.ComplaintStatus;
 import com.miet.complaintportal.service.ComplaintDetail;
 import com.miet.complaintportal.service.ComplaintService;
-import com.miet.complaintportal.service.ComplaintServiceImpl;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,7 +21,17 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/agent/update")
 public class AgentUpdateComplaintServlet extends HttpServlet {
 
-  private final ComplaintService complaintService = new ComplaintServiceImpl();
+  @Autowired
+  private ComplaintService complaintService;
+
+  public AgentUpdateComplaintServlet() {
+  }
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)

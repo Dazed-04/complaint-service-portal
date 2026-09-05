@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.miet.complaintportal.dao.OracleUserDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import com.miet.complaintportal.dao.UserDao;
 import com.miet.complaintportal.exceptions.InvalidAgentException;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.User;
 import com.miet.complaintportal.service.ComplaintService;
-import com.miet.complaintportal.service.ComplaintServiceImpl;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,8 +22,19 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/admin/assign")
 public class AdminAssignAgentServlet extends HttpServlet {
 
-  private final ComplaintService complaintService = new ComplaintServiceImpl();
-  private final UserDao userDao = new OracleUserDao();
+  @Autowired
+  private ComplaintService complaintService;
+  @Autowired
+  private UserDao userDao;
+
+  public AdminAssignAgentServlet() {
+  }
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)

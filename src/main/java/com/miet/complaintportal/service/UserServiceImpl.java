@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.miet.complaintportal.dao.OracleUserDao;
 import com.miet.complaintportal.dao.UserDao;
@@ -13,7 +15,9 @@ import com.miet.complaintportal.exceptions.LastAdminException;
 import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 
+@Service
 public class UserServiceImpl implements UserService {
+  @Autowired
   private final UserDao userDao;
 
   public UserServiceImpl() {

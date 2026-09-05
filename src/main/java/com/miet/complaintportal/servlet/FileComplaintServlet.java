@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import com.miet.complaintportal.dao.CategoryDao;
-import com.miet.complaintportal.dao.OracleCategoryDao;
 import com.miet.complaintportal.model.Category;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.service.ComplaintService;
-import com.miet.complaintportal.service.ComplaintServiceImpl;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -22,8 +23,19 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/complaints/file")
 public class FileComplaintServlet extends HttpServlet {
 
-  private final ComplaintService complaintService = new ComplaintServiceImpl();
-  private final CategoryDao categoryDao = new OracleCategoryDao();
+  @Autowired
+  private ComplaintService complaintService;
+  @Autowired
+  private CategoryDao categoryDao;
+
+  public FileComplaintServlet() {
+  }
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)

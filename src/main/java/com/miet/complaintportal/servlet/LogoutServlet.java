@@ -2,6 +2,8 @@ package com.miet.complaintportal.servlet;
 
 import java.io.IOException;
 
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,6 +13,15 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
+
+  public LogoutServlet() {
+  }
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)

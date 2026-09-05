@@ -4,6 +4,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.miet.complaintportal.dao.AttachmentDao;
 import com.miet.complaintportal.dao.ComplaintDao;
 import com.miet.complaintportal.dao.OracleAttachmentDao;
@@ -13,10 +16,13 @@ import com.miet.complaintportal.exceptions.FileTooLargeException;
 import com.miet.complaintportal.model.Attachment;
 import com.miet.complaintportal.model.Complaint;
 
+@Service
 public class AttachmentServiceImpl implements AttachmentService {
 
-  private final AttachmentDao attachmentDao;
-  private final ComplaintDao complaintDao;
+  @Autowired
+  private AttachmentDao attachmentDao;
+  @Autowired
+  private ComplaintDao complaintDao;
 
   public AttachmentServiceImpl() {
     this(new OracleAttachmentDao(), new OracleComplaintDao());

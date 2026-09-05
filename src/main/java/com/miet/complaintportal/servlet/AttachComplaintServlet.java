@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import com.miet.complaintportal.exceptions.ComplaintNotFoundException;
 import com.miet.complaintportal.exceptions.FileTooLargeException;
 import com.miet.complaintportal.service.AttachmentService;
-import com.miet.complaintportal.service.AttachmentServiceImpl;
 import com.miet.complaintportal.service.ComplaintDetail;
 import com.miet.complaintportal.service.ComplaintService;
-import com.miet.complaintportal.service.ComplaintServiceImpl;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -25,16 +26,23 @@ import jakarta.servlet.http.Part;
 @MultipartConfig(maxFileSize = 5 * 1024 * 1024, maxRequestSize = 6 * 1024 * 1024)
 public class AttachComplaintServlet extends HttpServlet {
 
-  private final AttachmentService attachmentService;
-  private final ComplaintService complaintService;
+  @Autowired
+  private AttachmentService attachmentService;
+  @Autowired
+  private ComplaintService complaintService;
 
   public AttachComplaintServlet() {
-    this(new AttachmentServiceImpl(), new ComplaintServiceImpl());
   }
 
   public AttachComplaintServlet(AttachmentService attachmentService, ComplaintService complaintService) {
     this.attachmentService = attachmentService;
     this.complaintService = complaintService;
+  }
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
   }
 
   @Override

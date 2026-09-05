@@ -3,11 +3,13 @@ package com.miet.complaintportal.servlet;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import com.miet.complaintportal.exceptions.EmailAlreadyExistsException;
 import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 import com.miet.complaintportal.service.UserService;
-import com.miet.complaintportal.service.UserServiceImpl;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -20,7 +22,17 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
-  private final UserService userService = new UserServiceImpl();
+  @Autowired
+  private UserService userService;
+
+  public RegisterServlet() {
+  }
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

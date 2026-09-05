@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.service.ComplaintService;
-import com.miet.complaintportal.service.ComplaintServiceImpl;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -19,7 +21,17 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/agent/assigned")
 public class AgentViewComplaintsServlet extends HttpServlet {
 
-  private final ComplaintService complaintService = new ComplaintServiceImpl();
+  @Autowired
+  private ComplaintService complaintService;
+
+  public AgentViewComplaintsServlet() {
+  }
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)

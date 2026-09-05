@@ -8,12 +8,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.miet.complaintportal.model.ComplaintStatus;
 import com.miet.complaintportal.model.StatusHistory;
 
+@Repository
 public class OracleStatusHistoryDao implements StatusHistoryDao {
 
-  private final DbConnectionProvider connectionProvider;
+  @Autowired
+  private DbConnectionProvider connectionProvider;
 
   public OracleStatusHistoryDao() {
     this.connectionProvider = new DbConnectionProvider();

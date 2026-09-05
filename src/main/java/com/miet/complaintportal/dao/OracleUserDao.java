@@ -10,11 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 
+@Repository
 public class OracleUserDao implements UserDao {
 
+  @Autowired
   private final DbConnectionProvider connectionProvider;
 
   public OracleUserDao() {

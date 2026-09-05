@@ -15,16 +15,14 @@
     </c:if>
     <table>
       <colgroup>
-        <col style="width: 8%">
-        <col style="width: 17%">
-        <col style="width: 17%">
-        <col style="width: 18%">
-        <col style="width: 30%">
+        <col style="width: 15%">
+        <col style="width: 20%">
+        <col style="width: 20%">
+        <col style="width: 35%">
         <col style="width: 10%">
       </colgroup>
       <thead>
         <tr>
-          <th>S.no</th>
           <th>Complaint Id</th>
           <th>Complaint Title</th>
           <th>Complaint Status</th>
@@ -33,11 +31,8 @@
         </tr>
       </thead>
       <tbody>
-        <c:forEach var="c" items="${complaints}" varStatus="loop">
+        <c:forEach var="c" items="${complaints}">
           <tr>
-            <td>
-              <c:out value="${loop.index + 1}" />
-            </td>
             <td>
               <c:out value="${c.id}" />
             </td>

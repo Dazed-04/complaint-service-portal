@@ -1,22 +1,24 @@
 package com.miet.complaintportal.tools;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.miet.complaintportal.config.AppConfig;
 import com.miet.complaintportal.model.Category;
 import com.miet.complaintportal.model.Complaint;
 import com.miet.complaintportal.model.ComplaintStatus;
 import com.miet.complaintportal.model.Role;
 import com.miet.complaintportal.model.User;
 import com.miet.complaintportal.service.CategoryService;
-import com.miet.complaintportal.service.CategoryServiceImpl;
 import com.miet.complaintportal.service.ComplaintService;
-import com.miet.complaintportal.service.ComplaintServiceImpl;
 import com.miet.complaintportal.service.UserService;
-import com.miet.complaintportal.service.UserServiceImpl;
 
 public class SeedTestData {
   public static void main(String[] args) throws Exception {
-    UserService userService = new UserServiceImpl();
-    CategoryService categoryService = new CategoryServiceImpl();
-    ComplaintService complaintService = new ComplaintServiceImpl();
+    ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+    UserService userService = context.getBean(UserService.class);
+    CategoryService categoryService = context.getBean(CategoryService.class);
+    ComplaintService complaintService = context.getBean(ComplaintService.class);
 
     String password = "Password123";
 
